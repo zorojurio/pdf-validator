@@ -12,6 +12,8 @@ class PdfDocumentValidator(models.Model):
     user = models.ForeignKey(
         CustomUser, on_delete=models.SET_NULL, blank=True,
         null=True)
+    all_signers_verified = models.BooleanField(default=False)
+    distinct_people_signed = models.IntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 

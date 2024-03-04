@@ -42,9 +42,13 @@ class PdfValidateForm(forms.ModelForm):
             pdf_validator.user = self.request.user
         pdf_validator.save()
         emails_to_be_sent = []
+        distinct_people_signed = set()
+        all_signers_verified = True
         if validator and hasattr(validator, 'validated_data_list') and validator.validated_data_list:
-            for validated_data in validator.validated_data_list:
+            for index, validated_data in enumerate(validator.validated_data_list, start=1):
                 validated_data['pdf_document_validator'] = pdf_validator
+                validated_data['signature_name'] = f'Signature {index}'
+                distinct_people_signed.add(validated_data['serial_number'])
                 if 'public_key' in validated_data:
                     validator = ValidatePublicKey(validated_data['public_key'])
                     validator.trim_key()
@@ -53,6 +57,7 @@ class PdfValidateForm(forms.ModelForm):
                     user = CustomUser.objects.filter(email=validated_data['email_of_signer'])
                     sign_user = SignerUser.objects.filter(
                         public_key=validated_data['public_key'],
+                        active=True
                     )
                     if user.exists() and sign_user.exists():
                         signature_validator.verified_signer = True
@@ -67,11 +72,14 @@ class PdfValidateForm(forms.ModelForm):
                             signature_validator.message = (
                                 f"{signature_validator.email_of_signer} is not provided in the signature, please "
                                 f"contact signer to create a signature with email and personal details.")
+                        all_signers_verified = False
                     signature_validator.save()
         if emails_to_be_sent:
             EmailService.send_invite_email(
                 emails_to_be_sent,
                 pdf_validator.pdf_file.path,
                 self.request)
+        pdf_validator.all_signers_verified = all_signers_verified
+        pdf_validator.distinct_people_signed = len(distinct_people_signed)
         pdf_validator.save()
         return pdf_validator
