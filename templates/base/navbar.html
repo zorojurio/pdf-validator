@@ -12,7 +12,9 @@
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'signature-validator-view:validated-pdf-list' %}">My Validated PDF's</a>
             </li>
-            
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'accounts:signers' %}">Check Signers</a>
+            </li>
             {% if user.is_authenticated and user.user_type == 'signer'  %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'accounts:add-signer' user.signer_user.pk %}"> Change my Public Key</a>

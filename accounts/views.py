@@ -9,8 +9,10 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views.generic import UpdateView
 from django.views.generic.edit import CreateView
+from django_filters.views import FilterView
 
 from validator import settings
+from .filters import SignerUserFilter
 from .forms import CustomUserCreationForm, SignerUserForm
 from .models import CustomUser, SignerUser, ValidatorUser
 from .tokens import account_activation_token
@@ -127,3 +129,15 @@ def activate(request, uidb64, token):
             'Activation link is invalid!'
         )
         return redirect(reverse_lazy('accounts:login'))
+
+
+class SignerUserListView(FilterView):
+    template_name = 'accounts/signer_list.html'
+    model = SignerUser
+    context_object_name = 'signers'
+    filterset_class = SignerUserFilter
+    paginate_by = 10
+
+    def get_queryset(self):
+        return SignerUser.objects.filter(active=True)
+

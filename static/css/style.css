@@ -43,3 +43,21 @@
     display: inline-block; /* or display: inline; */
     vertical-align: top; /* Adjust vertical alignment as needed */
 }
+
+.text-gray-800 {
+    --tw-text-opacity: 1;
+    color: rgb(31 41 55 / var(--tw-text-opacity));
+}
+
+.leading-7 {
+    line-height: 1.75rem;
+}
+
+.text-base {
+    font-size: 1rem;
+    line-height: 1.5rem;
+}
+
+.w-full {
+    width: 100%;
+}

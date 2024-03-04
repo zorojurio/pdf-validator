@@ -14,7 +14,7 @@
                             <div class="row">
 
                                 <div class="col-7">
-                                    <div>
+                                    <div class="w-full text-base text-gray-800 leading-7">
                                         The PDF is
                                         {% if pdf_restult.all_signers_verified %}
                                             <span class="text-success "> verified <i
@@ -25,7 +25,7 @@
                                             </span>
                                         {% endif %}
                                     </div>
-                                    <div>
+                                    <div class="w-full text-base text-gray-800 leading-7">
 
                                         All signatures are
                                         {% if pdf_restult.is_signatures_valid %}
@@ -37,8 +37,8 @@
                                             </span>
                                         {% endif %}
                                     </div>
-                                    <div>
 
+                                    <div class="w-full text-base text-gray-800 leading-7">
                                         Hashes are
                                         {% if pdf_restult.is_hashes_valid %}
                                             <span class="text-success"> Valid. <i
@@ -49,7 +49,7 @@
                                             </span>
                                         {% endif %}
                                     </div>
-                                     <div>
+                                     <div class="w-full text-base text-gray-800 leading-7">
                                         The PDF is
                                         {% if pdf_restult.is_signed %}
                                             <span class="text-success ">digitally signed. <i
@@ -60,7 +60,8 @@
                                             </span>
                                         {% endif %}
                                     </div>
-                                    <p> This PDF has signed by {{ pdf_restult.distinct_people_signed }} people, and there are
+                                    <p class="w-full text-base text-gray-800 leading-7">
+                                        This PDF has signed by {{ pdf_restult.distinct_people_signed }} people, and there are
                                         {{ pdf_restult.signaturevalidator_set.count }} signatures.</p>
                                     <div class="mb-5 mt-5">
                                         {% if pdf_restult.updated %}

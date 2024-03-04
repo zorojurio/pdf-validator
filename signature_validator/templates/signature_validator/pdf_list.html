@@ -60,9 +60,16 @@
                                    class="btn btn-outline-danger border-radius-one">Download PDF</a>
                             </td>
                         </tr>
+                    {% empty %}
+                        <div class="col-12">
+                            <div class="text-center">
+                                <img src="{% static 'img/pdf-home.png' %}" height="250px"
+                                     class=" d-inline center-image"
+                                     alt="">
+                                <h2 class="d-inline text-danger">You don't have any validated PDF documents.</h2>
+                            </div>
+                        </div>
                     {% endfor %}
-
-
                     </tbody>
                 </table>
             </div>

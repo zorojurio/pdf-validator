@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+{% load static %}
+{% block title %}Signers{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row mt-3">
+            <div class="col-8">
+                <div class="text-center">
+                    <img src="{% static 'img/pdf-search.png' %}" height="200px"
+                         class=" d-inline center-image"
+                         alt="">
+                    <h2 class="d-inline text-danger">Search Signers</h2>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-body">
+                        <form method="get" action="">
+                            <div class="card-body">
+                                {{ filter.form| crispy }}
+                            </div>
+                            <div class="text-right">
+                                <input class="btn btn-outline-secondary border-radius-one" type="submit" value="Filter"/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+
+
+            <div class="col-12 mt-5">
+                <table class="table table-bordered">
+                    <thead>
+                    {% if signers %}
+                        <tr class="font-weight-bold text-center">
+                        <th scope="col">ID</th>
+                        <th scope="col">Nic Number</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Profile Picture</th>
+                    </tr>
+                    {% endif %}
+
+                    </thead>
+                    <tbody>
+                    {% for signer in signers %}
+                        <tr class="text-center">
+                            <td>{{ signer.id }}</td>
+                            <td>{{ signer.nic_number }}</td>
+                            <td>{{ signer.user.email }}</td>
+                            <td><img src="{{ signer.profile_image.url }}" alt="profile-image" height="100px" width="100px" class="center-image"></td>
+                        </tr>
+                    {% empty %}
+                        <div class="col-12">
+                            <div class="text-center">
+                                <img src="{% static 'img/pdf-home.png' %}" height="150px"
+                                     class=" d-inline "
+                                     alt="">
+                                <h2 class="d-inline text-danger">
+                                    No Signer Found. Please try different filter option
+                                </h2>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

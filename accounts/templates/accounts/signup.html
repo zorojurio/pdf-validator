@@ -12,7 +12,7 @@
         <div class="col-6">
             <div class="card">
                 <div class="card-body">
-                <h2 class="text-primary mb-5">Sign Up</h2>
+                <h2 class="text-danger mb-5">Create a new account</h2>
                     <form method="post">
                         {% csrf_token %}
                         {{ form | crispy }}
@@ -20,7 +20,7 @@
                             <a class="btn btn-sm btn-link" href="{% url 'accounts:login' %}">Login</a>
                         </small>
                         <div class="text-right mt-5">
-                            <button class="btn btn-sm btn-primary" type="submit">Sign Up</button>
+                            <button class="btn btn-outline-danger border-radius-one" type="submit">Sign Up</button>
                         </div>
                     </form>
                 </div>

@@ -1,6 +1,6 @@
 from django.contrib.auth.views import LogoutView
 from django.urls import path
-from accounts.views import CustomLoginView, SignUpView, SignerUserView, activate
+from accounts.views import CustomLoginView, SignUpView, SignerUserView, activate, SignerUserListView
 
 app_name = 'accounts'
 urlpatterns = [
@@ -9,4 +9,5 @@ urlpatterns = [
     path("signup/", SignUpView.as_view(), name="signup"),
     path("<int:pk>/add-signer/", SignerUserView.as_view(), name="add-signer"),
     path("activate/<uidb64>/<token>/", activate, name="activate"),
+    path('signers/', SignerUserListView.as_view(), name='signers'),
 ]
