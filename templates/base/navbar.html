@@ -1,0 +1,48 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="{% url 'signature-validator-view:validate-signature' %}">
+         <img src="{% static 'img/logo-transparent.png' %}" style="max-height: 40px" alt="Logo">
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+            aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'signature-validator-view:validated-pdf-list' %}">My Validated PDF's</a>
+            </li>
+            
+            {% if user.is_authenticated and user.user_type == 'signer'  %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'accounts:add-signer' user.signer_user.pk %}"> Change my Public Key</a>
+                </li>
+            {% endif %}
+        </ul>
+        <ul class="navbar-nav ml-auto">
+
+            {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <span class="nav-link" href="">Hi, {{ user.username }} </span>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"
+                       onClick="document.getElementById('logoutform').submit()">
+                        Logout
+                    </a>
+                </li>
+                <form id="logoutform" method="POST" action="{% url 'accounts:logout' %}">
+                    {% csrf_token %}
+                    <input type="hidden">
+                </form>
+            {% else %}
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'accounts:login' %}">Sign In </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'accounts:signup' %}">Sign Up</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>

@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "validate-esignatures"
+version = "1.0.0"
+description = "Validate E signatures"
+authors = ["chanuka <chanuka.kernel@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.11.4"
+djangorestframework = "^3.14.0"
+django-filter = "^23.5"
+djangorestframework-simplejwt = "^5.3.1"
+django-admin-inline-paginator = "^0.4.0"
+ipython = "^8.20.0"
+load-dotenv = "^0.1.0"
+pypdf = "^4.0.2"
+python-dateutil = "^2.8.2"
+cryptography = "^42.0.4"
+asn1crypto = "^1.5.1"
+crispy-bootstrap4 = "^2023.1"
+pycrypto = "^2.6.1"
+django = "4.2.2"
+python-dotenv = "^1.0.1"
+
+
+[tool.poetry.group.test.dependencies]
+pytest = "^7.4.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

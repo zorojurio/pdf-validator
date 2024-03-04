@@ -1,0 +1,17 @@
+{% autoescape off %}  
+Dear{{ user.username }},
+We are pleased to inform you that your PDF document has been successfully validated using our
+PDF Validator tool. Your document meets the required standards and is ready for use.
+
+To access the validated PDF document, please click on the following link:
+http://{{ domain }}{% url 'accounts:activate' uidb64=uid token=token %}
+
+Please note that this link will expire after [expiration period], so we recommend downloading the
+validated document for your records.
+
+Thank you for using our PDF Validator tool. If you have any questions or need further assistance,
+please don't hesitate to contact us at 3rule57@gmail.com.
+
+Best regards,
+The PDF Validator Team.
+{% endautoescape %}

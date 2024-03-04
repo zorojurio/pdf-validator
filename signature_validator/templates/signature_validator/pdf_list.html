@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}My Validated PDF list{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col-2">
+
+            </div>
+            <div class="col-10">
+                <table class="table">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Is Signed</th>
+                        <th scope="col">Are Hashes Valid</th>
+                        <th scope="col">Are Signatures Valid</th>
+                        <th scope="col">Check</th>
+                        <th scope="col">Download</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for pdf in pdf_list %}
+                        <tr>
+                            <th scope="row"> {{ pdf.pk }}</th>
+                            <td> {{ pdf.is_signed }}</td>
+                            <td> {{ pdf.is_hashes_valid }}</td>
+                            <td> {{ pdf.is_signatures_valid }}</td>
+                            <td><a href="{% url 'signature-validator-view:pdf-result' pdf.pk %}"
+                                   class="btn btn-success">Check</a></td>
+                            <td><a href="{{ pdf.pdf_file.url }}"
+                                   target="_blank"
+                                   class="btn btn-primary">Download PDF</a></td>
+                        </tr>
+                    {% endfor %}
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
