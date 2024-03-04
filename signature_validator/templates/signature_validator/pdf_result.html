@@ -10,7 +10,7 @@
                 {% if pdf_restult %}
                     <div class="card">
                         <div class="card-body">
-                            <h2 class="text-info mb-5 text-center">PDF Validation Report. </h2>
+                            <h2 class="text-info mb-5 text-center underline-text">PDF Validation Report. </h2>
                             <div>
                                 The PDF is
                                 {% if pdf_restult.is_signed %}
@@ -26,10 +26,10 @@
 
                                 All signatures are
                                 {% if pdf_restult.is_signatures_valid %}
-                                    <span class="text-success"> Valid
+                                    <span class="text-success"> Valid.
                                         <i class="fas fa-check-circle green-circle"></i> </span>
                                 {% else %}
-                                    <span class="text-danger"> Not Signed
+                                    <span class="text-danger"> Not Signed.
                                         <i class="fas fa-times-circle red-circle"></i>
                                     </span>
                                 {% endif %}
@@ -38,24 +38,23 @@
 
                                 Hashes are
                                 {% if pdf_restult.is_hashes_valid %}
-                                    <span class="text-success"> Valid  <i
+                                    <span class="text-success"> Valid. <i
                                             class="fas fa-check-circle green-circle"></i></span>
                                 {% else %}
-                                    <span class="text-danger"> not valid, document is altered
+                                    <span class="text-danger"> not valid, The document has been modified.
                                         <i class="fas fa-times-circle red-circle"></i>
                                     </span>
                                 {% endif %}
                             </div>
                             <p> This PDF was signed {{ pdf_restult.signaturevalidator_set.count }}
-                                Times</p>
-                            <div class="mb-5 mt-5 text-right">
+                                Times.</p>
+                            <div class="mb-5 mt-5">
                                 {% if pdf_restult.updated %}
                                     Date of Validation:
                                     <span class="text-secondary"> {{ pdf_restult.updated }}</span>
                                 {% endif %}
                             </div>
-                            <h3 class="text-secondary text-center mb-4">Signature Details Break
-                                Down</h3>
+                            <h3 class="text-secondary text-center mb-4 underline-text">Signature Details.</h3>
 
                             <div class="row">
                                 <div class="col-8">
@@ -65,11 +64,11 @@
                                                     <ul class="mt-2">
                                                         <li><span class="font-weight-bold">Hash is :</span>
                                                             {% if signaturevalidator.hash_valid %}
-                                                                <span class="text-success"> valid
+                                                                <span class="text-success"> valid.
                                                                         <i class="fas fa-check-circle green-circle"></i>
                                                                     </span>
                                                             {% else %}
-                                                                <span class="text-danger"> invalid
+                                                                <span class="text-danger"> invalid.
                                                                     <i class="fas fa-times-circle red-circle"></i>
                                                                 </span>
                                                             {% endif %}
@@ -77,22 +76,22 @@
                                                         <li><span class="font-weight-bold">Signature Valid:</span>
                                                             <span class="text"></span>
                                                             {% if signaturevalidator.signature_valid %}
-                                                                <span class="text-success"> valid
+                                                                <span class="text-success"> valid.
                                                                         <i class="fas fa-check-circle green-circle"></i>
                                                                     </span>
                                                             {% else %}
-                                                                <span class="text-danger"> invalid
+                                                                <span class="text-danger"> invalid.
                                                                     <i class="fas fa-times-circle red-circle"></i>
                                                                 </span>
                                                             {% endif %}
                                                         </li>
                                                         <li><span class="font-weight-bold">Verified Signer:</span>
                                                             {%if signaturevalidator.verified_signer %}
-                                                                <span class="text-success"> Signer is verified
+                                                                <span class="text-success"> Signer is verified in the system
                                                                     <i class="fas fa-check-circle green-circle"></i>
                                                                 </span>
                                                             {% else %}
-                                                                <span class="text-danger"> Signer is not verified
+                                                                <span class="text-danger"> Signer is not verified in the system
                                                                     <i class="fas fa-times-circle red-circle"></i>
                                                                 </span>
                                                             {% endif %}

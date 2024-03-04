@@ -34,3 +34,7 @@
 .red-circle{
     color: #f41f1f;
 }
+
+.underline-text {
+    text-decoration: underline;
+}
