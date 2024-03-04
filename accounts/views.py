@@ -1,16 +1,16 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
-from django.contrib.sites.shortcuts import get_current_site
-from django.core.mail import EmailMessage, send_mail
+from django.core.mail import EmailMessage, mail_admins, send_mail
 from django.shortcuts import redirect
 from django.template.loader import render_to_string
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views.generic import UpdateView
 from django.views.generic.edit import CreateView
 
+from validator import settings
 from .forms import CustomUserCreationForm, SignerUserForm
 from .models import CustomUser, SignerUser, ValidatorUser
 from .tokens import account_activation_token
@@ -33,11 +33,11 @@ class SignUpView(CreateView):
             signer.save()
         elif user.user_type == CustomUser.UserType.validator:
             ValidatorUser.objects.create(user=user)
-        current_site = get_current_site(self.request)
+        current_site = self.request.build_absolute_uri('/')[:-1]
         mail_subject = 'Activation link has been sent to your email.'
         message = render_to_string(template_name='accounts/account_activation_email.html', context={
             'user': user,
-            'domain': current_site.domain,
+            'domain': current_site,
             'uid': urlsafe_base64_encode(force_bytes(user.pk)),
             'token': account_activation_token.make_token(user),
         })
@@ -53,11 +53,6 @@ class SignUpView(CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        user: CustomUser = self.object
-        if user.user_type == CustomUser.UserType.signer:
-            return reverse_lazy('accounts:add-signer', kwargs={'pk': user.signer_user.pk})
-        elif user.user_type == CustomUser.UserType.validator:
-            return reverse_lazy('accounts:login')
         return reverse_lazy('accounts:login')
 
 
@@ -73,13 +68,32 @@ class SignerUserView(LoginRequiredMixin, UpdateView):
         signer_user = form.save(commit=False)
         signer_user.user = self.request.user
         signer_user.save()
-        if signer_user.public_key:
-            send_mail(
-                subject=f'Check Verification of Signer {self.request.user.username}',
-                message='Your signer user has been verified.',
-                recipient_list=[self.request.user.email],
+        self.request.get_full_path()
+        host = self.request.build_absolute_uri('/')[:-1]
+        url = reverse(
+            viewname='admin:accounts_signeruser_change',
+            args=[self.request.user.signer_user.pk]
+        )
 
+        if signer_user.public_key:
+            mail_admins(
+                subject=f'Check Verification of Signer {self.request.user.username}',
+                message=f"A new signer has been joined, please verify and accept. \n"
+                        f"Username: {self.request.user.username} \n"
+                        f"Email: {self.request.user.email} \n"
+                        f"{host + url}",
+                fail_silently=False,
             )
+            send_mail(
+                subject='Signer Verification',
+                message=f"Your verification as a signer is under process, we will notify you soon.",
+                recipient_list=[self.request.user.email],
+                from_email=settings.EMAIL_HOST_USER,
+                fail_silently=False,
+            )
+            messages.warning(
+                self.request,
+                "Your verification is under process, we will notify you soon.")
         return super().form_valid(form)
 
     def get_form_kwargs(self):
@@ -104,6 +118,8 @@ def activate(request, uidb64, token):
             request,
             'Thank you for your email confirmation. Now you can login to your account.'
         )
+        if user.user_type == CustomUser.UserType.signer:
+            return redirect(reverse_lazy('accounts:add-signer', kwargs={'pk': user.signer_user.pk}))
         return redirect(reverse_lazy('accounts:login'))
     else:
         messages.error(

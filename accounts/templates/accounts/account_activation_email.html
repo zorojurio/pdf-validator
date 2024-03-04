@@ -1,17 +1,18 @@
 {% autoescape off %}  
-Dear{{ user.username }},
-We are pleased to inform you that your PDF document has been successfully validated using our
-PDF Validator tool. Your document meets the required standards and is ready for use.
+Dear {{ user.username }},
 
-To access the validated PDF document, please click on the following link:
-http://{{ domain }}{% url 'accounts:activate' uidb64=uid token=token %}
+Welcome to PDF Validator! We're excited to have you on board. To get started,
+please activate your account by clicking the link below:
 
-Please note that this link will expire after [expiration period], so we recommend downloading the
-validated document for your records.
+{{ domain }}{% url 'accounts:activate' uidb64=uid token=token %}
 
-Thank you for using our PDF Validator tool. If you have any questions or need further assistance,
-please don't hesitate to contact us at 3rule57@gmail.com.
+If you have any questions or encounter any issues during the activation process,
+feel free to reach out to our support team at  3rule57@gmail.com.
+
+Thank you for choosing PDF Validator. We look forward to serving you!
 
 Best regards,
-The PDF Validator Team.
+Chanuka
+PDF Validator Team
+
 {% endautoescape %}

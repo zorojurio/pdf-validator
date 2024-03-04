@@ -66,6 +66,10 @@ class SignerUser(models.Model):
         default=False,
         help_text="Signer user is active or not"
     )
+    rejected = models.BooleanField(
+        default=False,
+        help_text="Signer user is rejected or not"
+    )
 
     def __str__(self):
         return f'{self.pk}'

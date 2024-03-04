@@ -47,6 +47,10 @@ class SignerUserForm(forms.ModelForm):
     def clean_certificate(self):
         certificate = self.cleaned_data.get('certificate')
         if certificate:
+            if certificate.name.split('.')[-1] not in ['fdf', 'cer', 'p7c']:
+                raise forms.ValidationError(
+                    f"Invalid certificate file type. Only .fdf, .cer, .p7c are allowed."
+                )
             try:
                 self.calculated_public_key = PublicKeyExtractor(
                     certificate.name,
