@@ -38,3 +38,8 @@
 .underline-text {
     text-decoration: underline;
 }
+
+.make-inline {
+    display: inline-block; /* or display: inline; */
+    vertical-align: top; /* Adjust vertical alignment as needed */
+}

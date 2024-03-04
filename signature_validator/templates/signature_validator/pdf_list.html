@@ -1,37 +1,64 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}My Validated PDF list{% endblock %}
 
 {% block content %}
     <div class="container">
         <div class="row mt-5">
-            <div class="col-2">
-
+            <div class="col-12">
+                <div class="text-center">
+                    <img src="{% static 'img/pdf-home.png' %}" height="250px"
+                         class=" d-inline center-image"
+                         alt="">
+                    <h2 class="d-inline text-danger">Validated PDF list</h2>
+                </div>
             </div>
-            <div class="col-10">
-                <table class="table">
-                    <thead class="thead-dark">
-                    <tr>
+
+            <div class="col-12 mt-5">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr class="font-weight-bold text-center">
                         <th scope="col">ID</th>
-                        <th scope="col">Is Signed</th>
-                        <th scope="col">Are Hashes Valid</th>
-                        <th scope="col">Are Signatures Valid</th>
+                        <th scope="col">Verified</th>
+                        <th scope="col">Hashes Valid</th>
+                        <th scope="col">Signatures Valid</th>
                         <th scope="col">Check</th>
                         <th scope="col">Download</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for pdf in pdf_list %}
-                        <tr>
+                        <tr class="text-center">
                             <th scope="row"> {{ pdf.pk }}</th>
-                            <td> {{ pdf.is_signed }}</td>
-                            <td> {{ pdf.is_hashes_valid }}</td>
-                            <td> {{ pdf.is_signatures_valid }}</td>
+                            <td >
+                                {% if pdf.all_signers_verified %}
+                                    <i class="fas fa-check-circle green-circle"></i>
+                                {% else %}
+                                    <i class="fas fa-times-circle red-circle"></i>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% if pdf.is_hashes_valid %}
+                                    <i class="fas fa-check-circle green-circle"></i>
+                                {% else %}
+                                    <i class="fas fa-times-circle red-circle"></i>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if pdf.is_signatures_valid %}
+                                    <i class="fas fa-check-circle green-circle"></i>
+                                {% else %}
+                                    <i class="fas fa-times-circle red-circle"></i>
+                                {% endif %}
+                            </td>
                             <td><a href="{% url 'signature-validator-view:pdf-result' pdf.pk %}"
-                                   class="btn btn-success">Check</a></td>
+                                   class="btn btn-outline-success border-radius-one">Details</a>
+                            </td>
                             <td><a href="{{ pdf.pdf_file.url }}"
                                    target="_blank"
-                                   class="btn btn-primary">Download PDF</a></td>
+                                   class="btn btn-outline-danger border-radius-one">Download PDF</a>
+                            </td>
                         </tr>
                     {% endfor %}
 
