@@ -1,5 +1,6 @@
-{% extends 'base.html' %}
 
+{% extends 'base.html' %}
+{% load static %}
 {% block title %}Verified Outcomes{% endblock %}
 
 {% block content %}
@@ -9,103 +10,108 @@
                 {% if pdf_restult %}
                     <div class="card">
                         <div class="card-body">
-                            <h2 class="text-primary mb-5 text-center">Verified Outcomes: Ensuring Data Integrity</h2>
-                            <div>The PDF is
+                            <h2 class="text-info mb-5 text-center">PDF Validation Report. </h2>
+                            <div>
+                                The PDF is
                                 {% if pdf_restult.is_signed %}
-                                    <span class="text-success">Signed</span>
+                                    <span class="text-success ">digitally signed. <i
+                                            class="fas fa-check-circle green-circle"></i> </span>
                                 {% else %}
-                                    <span class="text-danger">Not Signed</span>
+                                    <span class="text-danger">digitally not signed.
+                                    <i class="fas fa-times-circle red-circle"></i>
+                                    </span>
                                 {% endif %}
                             </div>
-                            <div> All signatures are
+                            <div>
+
+                                All signatures are
                                 {% if pdf_restult.is_signatures_valid %}
-                                    <span class="text-success"> Valid</span>
+                                    <span class="text-success"> Valid
+                                        <i class="fas fa-check-circle green-circle"></i> </span>
                                 {% else %}
-                                    <span class="text-danger"> Not Signed</span>
+                                    <span class="text-danger"> Not Signed
+                                        <i class="fas fa-times-circle red-circle"></i>
+                                    </span>
                                 {% endif %}
                             </div>
-                            <div> All hashes are
+                            <div>
+
+                                Hashes are
                                 {% if pdf_restult.is_hashes_valid %}
-                                    <span class="text-success"> Valid</span>
+                                    <span class="text-success"> Valid  <i
+                                            class="fas fa-check-circle green-circle"></i></span>
                                 {% else %}
-                                    <span class="text-danger"> Not Signed</span>
+                                    <span class="text-danger"> not valid, document is altered
+                                        <i class="fas fa-times-circle red-circle"></i>
+                                    </span>
                                 {% endif %}
                             </div>
-                            <div class="mb-5">
-                                {% if pdf_restult.updated %}
-                                    Validated At:
-                                    <span class="text-info"> {{ pdf_restult.updated }}</span>
-                                {% endif %}
-                            </div>
-                            <h3 class="text-warning mb-4">Signature Details Break Down</h3>
                             <p> This PDF was signed {{ pdf_restult.signaturevalidator_set.count }}
                                 Times</p>
+                            <div class="mb-5 mt-5 text-right">
+                                {% if pdf_restult.updated %}
+                                    Date of Validation:
+                                    <span class="text-secondary"> {{ pdf_restult.updated }}</span>
+                                {% endif %}
+                            </div>
+                            <h3 class="text-secondary text-center mb-4">Signature Details Break
+                                Down</h3>
+
                             <div class="row">
-                                <div class="col-4">
-                                    <div class="list-group" id="list-tab" role="tablist">
-                                        {% for signaturevalidator in pdfdocumentvalidator.signaturevalidator_set.all %}
-                                            <a class="list-group-item list-group-item-action"
-                                               id="list-{{ signaturevalidator.signature_name }}-list"
-                                               data-toggle="list"
-                                               href="#{{ signaturevalidator.signature_name }}"
-                                               role="tab"
-                                               aria-controls="{{ signaturevalidator.signature_name }}">
-                                                {{ signaturevalidator.signature_name }}
-                                            </a>
-                                        {% endfor %}
-                                    </div>
-                                </div>
                                 <div class="col-8">
-                                    <div class="tab-content" id="nav-tabContent">
                                         {% for signaturevalidator in pdfdocumentvalidator.signaturevalidator_set.all %}
-                                            <div class="tab-pane fade show mb-3"
-                                                 id="{{ signaturevalidator.signature_name }}"
-                                                 role="tabpanel"
-                                                 aria-labelledby="list-{{ signaturevalidator.signature_name }}-list">
-                                                {{ signaturevalidator.signature_name }} was signed
-                                                by {{ signaturevalidator.signed_by | title }}
+                                            <h5 class="text-secondary">{{ signaturevalidator.signature_name }}</h5>
 
                                                     <ul class="mt-2">
-                                                        <li><span class="font-weight-bold">Serial Number:</span> {{ signaturevalidator.serial_number }}</li>
                                                         <li><span class="font-weight-bold">Hash is :</span>
                                                             {% if signaturevalidator.hash_valid %}
-                                                                    <span class="text-success"> valid</span>
+                                                                <span class="text-success"> valid
+                                                                        <i class="fas fa-check-circle green-circle"></i>
+                                                                    </span>
                                                             {% else %}
-                                                                <span class="text-danger"> invalid</span>
+                                                                <span class="text-danger"> invalid
+                                                                    <i class="fas fa-times-circle red-circle"></i>
+                                                                </span>
                                                             {% endif %}
                                                         </li>
                                                         <li><span class="font-weight-bold">Signature Valid:</span>
                                                             <span class="text"></span>
                                                             {% if signaturevalidator.signature_valid %}
-                                                                    <span class="text-success"> valid</span>
+                                                                <span class="text-success"> valid
+                                                                        <i class="fas fa-check-circle green-circle"></i>
+                                                                    </span>
                                                             {% else %}
-                                                                <span class="text-danger"> invalid</span>
+                                                                <span class="text-danger"> invalid
+                                                                    <i class="fas fa-times-circle red-circle"></i>
+                                                                </span>
                                                             {% endif %}
                                                         </li>
                                                         <li><span class="font-weight-bold">Verified Signer:</span>
                                                             {%if signaturevalidator.verified_signer %}
-                                                                <span class="text-success"> Signer is verified</span>
+                                                                <span class="text-success"> Signer is verified
+                                                                    <i class="fas fa-check-circle green-circle"></i>
+                                                                </span>
                                                             {% else %}
-                                                                <span class="text-danger"> Signer is not verified</span>
+                                                                <span class="text-danger"> Signer is not verified
+                                                                    <i class="fas fa-times-circle red-circle"></i>
+                                                                </span>
                                                             {% endif %}
                                                         </li>
                                                         {% if signaturevalidator.message %}
                                                         	<li>
                                                                 <span class="font-weight-bold">Message:</span>
-                                                                <span class="text-warning">{{ signaturevalidator.message }}</span>
+                                                            <span class="text-secondary">{{ signaturevalidator.message }}</span>
                                                         {% endif %}
-                                                        <li><span class="font-weight-bold">Signer:</span> {{ signaturevalidator.signed_by }}</li>
-                                                        <li><span class="font-weight-bold">Signer Email:</span> {{ signaturevalidator.email_of_signer }}</li>
-                                                        <li><span class="font-weight-bold">Signature Algorithm:</span> {{ signaturevalidator.signature_algorithm }}</li>
-                                                        <li><span class="font-weight-bold">Public Key:</span> {{ signaturevalidator.public_key }}</li>
-                                                        <li><span class="font-weight-bold">Signing Time:</span> {{ signaturevalidator.signing_time }}</li>
-                                                        <li><span class="font-weight-bold">Digest Algorithm:</span> {{ signaturevalidator.digest_algorithm }}</li>
-                                                        <li><span class="font-weight-bold">Message Digest:</span> {{ signaturevalidator.message_digest }}</li>
+                                                        <li><span class="font-weight-bold">Signed by:</span> {{ signaturevalidator.signed_by }}
+                                                        </li>
+                                                        <li><span class="font-weight-bold">Signer's Email:</span> {{ signaturevalidator.email_of_signer }}
+                                                        </li>
+                                                        <li><span class="font-weight-bold">Signature placed at:</span> {{ signaturevalidator.signing_time }}
+                                                        </li>
                                                     </ul>
 
-                                            </div>
+
                                         {% endfor %}
-                                    </div>
                                 </div>
                             </div>
 
@@ -117,12 +123,24 @@
             <div class="col-3">
                 <div class="card">
                     <div class="card-body">
-                        <h3 class="text-primary mb-5 text-center">Actions</h3>
-                        <a href="{{ pdf_restult.pdf_file.url }}"
+                        <h3 class="text-danger mb-5 text-center">Actions</h3>
+                        <img class="center-image" src="{% static 'img/pdf-download-2617.svg' %}"
+                             height="100px" alt="download pdf">
+                        <div class="text-center mt-3">
+                            <a href="{{ pdf_restult.pdf_file.url }}"
+
                            target="_blank"
-                           class="btn btn-primary btn-block">Download PDF</a>
-                        <a href="{% url 'signature-validator-view:validate-signature' %}"
-                           class="btn btn-success btn-block">Validate Another PDF</a>
+                               class="btn btn-outline-danger border-radius-one">Download PDF</a>
+                        </div>
+
+                        <img class="center-image mt-5" src="{% static 'img/pdf-validation.png' %}"
+                             height="100px" alt="download pdf">
+                        <div class="text-center mt-3">
+                            <a href="{% url 'signature-validator-view:validate-signature' %}"
+                               class="btn btn-outline-success border-radius-one">Validate another
+                                PDF</a>
+                        </div>
+
                     </div>
                 </div>
             </div>

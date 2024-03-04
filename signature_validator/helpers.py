@@ -73,16 +73,14 @@ class PdfSignatureValidator:
             logger.info(f"Signing time: {signing_time}")
             br = value['/ByteRange']
             logger.info(len(self.pdf_bytes))
-
-            orginal_data_before_signatures, signature_data_in_bytes = (
-                self.extract_signature_and_orginal_data_from_byte_range(br)
-            )
+            signature_data_in_bytes = value['/Contents']
+            orginal_data_before_signatures = self.extract_orginal_data_from_byte_range(br)
             verified_data = {
                 'signature_name': k,
                 'signing_time': signing_time
             }
             try:
-                self.verify_hash_integrity(
+                self.verify_hash_and_integrity(
                     signature_data_in_bytes,
                     orginal_data_before_signatures,
                     verified_data
@@ -117,13 +115,13 @@ class PdfSignatureValidator:
                 break
         self.is_signatures_valid = is_valid_signature
 
-    def extract_signature_and_orginal_data_from_byte_range(self, br):
+    def extract_orginal_data_from_byte_range(self, br):
         first_section = self.pdf_bytes[br[0]: br[0] + br[1]]
         second_section = self.pdf_bytes[br[2]: br[2] + br[3]]
         orginal_data_before_signatures = first_section + second_section
-        signature_data = self.pdf_bytes[br[1] + 1: br[2] - 1]
-        signature_data_in_bytes = bytes.fromhex(signature_data.decode('utf-8'))
-        return orginal_data_before_signatures, signature_data_in_bytes
+        # signature_data = self.pdf_bytes[br[1] + 1: br[2] - 1]
+        # from above algorithm, signature_data is in hex format
+        return orginal_data_before_signatures
 
     @staticmethod
     def parse_pkcs7_signatures(signature_data: bytes):
@@ -138,7 +136,7 @@ class PdfSignatureValidator:
         signer_infos = content['signer_infos']
         return signer_infos, native_data, certificates
 
-    def verify_hash_integrity(
+    def verify_hash_and_integrity(
             self,
             signature_data_in_bytes: bytes,
             orginal_data_before_signatures,
@@ -177,6 +175,8 @@ class PdfSignatureValidator:
             public_key_obj, public_key_str = self.get_public_key_from_certification(cert)
             # sig_value_in_bytes = cert['signature_value']
             try:
+                # we are checking the signature with the signed attributes
+                # signed attributes consists of message digest and other attributes
                 public_key_obj.verify(
                     signature_bytes,
                     sig_attributes,

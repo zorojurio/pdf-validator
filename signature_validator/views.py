@@ -1,8 +1,8 @@
-from django.shortcuts import render
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView, DetailView, ListView
+
 from .forms import PdfValidateForm
 from .models import PdfDocumentValidator
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class ValidateSignatureView(LoginRequiredMixin, CreateView):
