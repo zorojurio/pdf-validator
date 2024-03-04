@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load crispy_forms_filters %}
 {% load crispy_forms_tags %}
 
 {% block title %}Add Signer{% endblock %}
@@ -12,13 +13,13 @@
         <div class="col-6">
             <div class="card">
                 <div class="card-body">
-                <h2 class="text-primary mb-5">Create Signer</h2>
+                <h2 class="text-danger mb-5">Create Signer</h2>
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         {{ form | crispy }}
 
                         <div class="text-right mt-5">
-                            <button class="btn btn-sm btn-primary" type="submit">Add Public Key</button>
+                            <button class="btn btn-outline-danger border-radius-one" type="submit">Add Public Key</button>
                         </div>
                     </form>
                 </div>
