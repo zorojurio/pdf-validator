@@ -1,3 +1,5 @@
+import time
+
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
@@ -121,6 +123,7 @@ def activate(request, uidb64, token):
             'Thank you for your email confirmation. Now you can login to your account.'
         )
         if user.user_type == CustomUser.UserType.signer:
+            time.sleep(10)
             return redirect(reverse_lazy('accounts:add-signer', kwargs={'pk': user.signer_user.pk}))
         return redirect(reverse_lazy('accounts:login'))
     else:

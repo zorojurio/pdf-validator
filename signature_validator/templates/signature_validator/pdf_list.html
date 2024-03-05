@@ -4,7 +4,7 @@
 
 {% block content %}
     <div class="container">
-        <div class="row mt-5">
+        {% if pdf_list %}
             <div class="col-12">
                 <div class="text-center">
                     <img src="{% static 'img/pdf-home.png' %}" height="250px"
@@ -13,10 +13,14 @@
                     <h2 class="d-inline text-danger">Validated PDF list</h2>
                 </div>
             </div>
+        {% endif %}
+        <div class="row mt-5">
+
 
             <div class="col-12 mt-5">
                 <table class="table table-bordered">
-                    <thead>
+                    {% if pdf_list %}
+                        <thead>
                     <tr class="font-weight-bold text-center">
                         <th scope="col">ID</th>
                         <th scope="col">Verified</th>
@@ -26,6 +30,7 @@
                         <th scope="col">Download</th>
                     </tr>
                     </thead>
+                    {% endif %}
                     <tbody>
                     {% for pdf in pdf_list %}
                         <tr class="text-center">

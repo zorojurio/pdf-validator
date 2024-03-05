@@ -16,7 +16,7 @@ class CustomUser(AbstractUser):
         choices=UserType.choices,
         default=UserType.validator,
     )
-    email = models.EmailField(_("email address"))
+    email = models.EmailField(_("email address"), unique=True)
     is_active = models.BooleanField(
         _("active"),
         default=False,
