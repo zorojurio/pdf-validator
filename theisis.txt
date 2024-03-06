@@ -1,0 +1,10 @@
+When it comes to implementation PDF validator, it is broken up by two modules.
+The accounts module and signature validator module are the two core modules of the application.
+Authentication and the authorization is the most important responsibilities of the accounts module.
+Core tasks of the signature validator module are to
+ parsed by a PDF reader to extract information from the file,
+ extract the byte range from the parsed data,
+  extract the signature from the parsed data,
+  get the original byte from the byte range,
+  get the hash of the orginal bytes
+ check tha hash of the PDF file and to verify the signature of the PDF file,

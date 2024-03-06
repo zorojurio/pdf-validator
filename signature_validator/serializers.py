@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from accounts.models import CustomUser
 from accounts.serializers import UserSerializer
-from signature_validator.helpers import PdfSignatureValidator
+from signature_validator.services.pdf_validation_service import PdfSignatureValidator
 from signature_validator.models import PdfDocumentValidator, SignatureValidator
 
 

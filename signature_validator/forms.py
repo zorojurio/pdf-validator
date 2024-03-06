@@ -1,9 +1,9 @@
 from django import forms
 
-from accounts.helpers import ValidatePublicKey
+from accounts.services.pbs_validation_service import ValidatePublicKey
 from accounts.models import SignerUser, CustomUser
 from validator.logger import module_logger
-from .helpers import PdfSignatureValidator
+from signature_validator.services.pdf_validation_service import PdfSignatureValidator
 from .models import PdfDocumentValidator, SignatureValidator
 from .services.email_service import EmailService
 

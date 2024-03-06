@@ -1,7 +1,6 @@
 from asn1crypto import cms
-from accounts.helpers import ValidatePublicKey
-from signature_validator.helpers import PdfSignatureValidator
-import re
+from accounts.services.pbs_validation_service import ValidatePublicKey
+from signature_validator.services.pdf_validation_service import PdfSignatureValidator
 
 from cryptography.hazmat.backends import default_backend
 from cryptography import x509

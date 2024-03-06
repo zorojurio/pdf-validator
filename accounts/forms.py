@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 import re
 from .models import CustomUser, SignerUser
-from .services import PublicKeyExtractor
+from .services.pbs_extractor_service import PublicKeyExtractor
 
 
 class CustomUserCreationForm(UserCreationForm):

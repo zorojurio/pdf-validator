@@ -175,7 +175,7 @@ class PdfSignatureValidator:
             public_key_obj, public_key_str = self.get_public_key_from_certification(cert)
             # sig_value_in_bytes = cert['signature_value']
             try:
-                # we are checking the signature with the signed attributes
+                # we are checking the signature with the signed attributes, to check if the doc is signed witha correstponding private key
                 # signed attributes consists of message digest and other attributes
                 public_key_obj.verify(
                     signature_bytes,
