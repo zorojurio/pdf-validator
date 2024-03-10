@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import logging
 
 from .configs import LOG_LEVEL
@@ -7,6 +8,7 @@ logging.basicConfig(format=FORMAT, level=LOG_LEVEL)
 
 
 def module_logger(n=__name__):
+    """Create a logger for the module."""
     logger = logging.getLogger(n)
     logger.setLevel(LOG_LEVEL)
     handler = logging.StreamHandler()

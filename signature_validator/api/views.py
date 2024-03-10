@@ -1,7 +1,8 @@
+# -*- coding: utf-8 -*-
 from rest_framework import viewsets
 from rest_framework.permissions import AllowAny
 
-from signature_validator.models import SignatureValidator, PdfDocumentValidator
+from signature_validator.models import PdfDocumentValidator
 from signature_validator.serializers import PdfValidateSerializer
 
 

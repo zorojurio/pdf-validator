@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django import forms
 
 from accounts.services.pbs_validation_service import ValidatePublicKey
@@ -11,15 +12,21 @@ logger = module_logger(__name__)
 
 
 class PdfValidateForm(forms.ModelForm):
+    """Form for validating the PDF file."""
+
     def __init__(self, *args, **kwargs):
+        """Initialize the form with request object."""
         self.request = kwargs.pop("request")
         super(PdfValidateForm, self).__init__(*args, **kwargs)
 
     class Meta:
+        """Meta class for PdfValidateForm."""
+
         model = PdfDocumentValidator
         fields = ("pdf_file",)
 
     def clean_pdf_file(self):
+        """Validate the PDF file."""
         pdf_file = self.cleaned_data.get("pdf_file")
         if not pdf_file:
             raise forms.ValidationError("PDF file is required.")
@@ -73,16 +80,18 @@ class PdfValidateForm(forms.ModelForm):
                                 signature_validator.email_of_signer
                             )
                             signature_validator.message = (
-                                f"{signature_validator.email_of_signer} is not registered in the system, we have "
-                                f"already sent an invitation email, please contact signer to signup in the system."
+                                f"{signature_validator.email_of_signer} is not registered in the "
+                                f"system, we have already sent an invitation email, please contact "
+                                f"signer to signup in the system."
                             )
                             logger.info(
                                 "Sending signup invitation email to the signer."
                             )
                         else:
                             signature_validator.message = (
-                                f"{signature_validator.email_of_signer} is not provided in the signature, please "
-                                f"contact signer to create a signature with email and personal details."
+                                f"{signature_validator.email_of_signer} is not provided in the "
+                                f"signature, please contact signer to create a signature with email"
+                                f" and personal details."
                             )
                     signature_validator.save()
         if emails_to_be_sent:

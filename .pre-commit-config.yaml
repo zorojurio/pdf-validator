@@ -1,11 +1,43 @@
 repos:
--   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.3.0
-    hooks:
-    -   id: check-yaml
-    -   id: end-of-file-fixer
-    -   id: trailing-whitespace
--   repo: https://github.com/psf/black
-    rev: 22.10.0
-    hooks:
-    -   id: black
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.5.0
+  hooks: # general hooks
+  -   id: check-added-large-files
+  -   id: check-ast
+  -   id: check-case-conflict
+  -   id: check-merge-conflict
+  -   id: check-toml
+  -   id: check-xml
+  -   id: check-yaml
+  -   id: debug-statements
+  -   id: end-of-file-fixer
+  -   id: trailing-whitespace
+- repo: https://github.com/psf/black
+  rev: 24.1.1
+  hooks:
+  - id: black
+- repo: https://github.com/pycqa/flake8
+  rev: 7.0.0
+  hooks:
+    - id: flake8
+      args:
+        - --max-line-length=100
+        - --extend-ignore=E266
+        - --per-file-ignores=**/tests/*:E501
+      additional_dependencies:
+        - flake8-print
+
+- repo: https://github.com/pycqa/pydocstyle
+  rev: 6.1.1
+  hooks:
+  - id: pydocstyle
+    args:
+    - --convention=google
+    - --add-ignore=D100,D104,D105,D106,D212
+    - --add-select=D404,D413
+    exclude: |
+        (?x)(
+            migrations|
+            docs |
+            classifier.py
+        )

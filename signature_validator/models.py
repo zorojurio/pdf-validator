@@ -1,10 +1,13 @@
+# -*- coding: utf-8 -*-
 from django.db import models
 from django.urls import reverse
 
-from accounts.models import ValidatorUser, CustomUser
+from accounts.models import CustomUser
 
 
 class PdfDocumentValidator(models.Model):
+    """Model to store PDF validation data for the whole document."""
+
     pdf_file = models.FileField(upload_to="pdfs/", blank=False, null=False)
     is_signed = models.BooleanField(default=False)
     is_hashes_valid = models.BooleanField(default=False)
@@ -21,10 +24,13 @@ class PdfDocumentValidator(models.Model):
         return self.pdf_file.name
 
     def get_absolute_url(self):
+        """Get absolute URL for the instance."""
         return reverse("signature-validator-view:pdf-result", kwargs={"pk": self.pk})
 
 
 class SignatureValidator(models.Model):
+    """Model to store signature validation data."""
+
     pdf_document_validator = models.ForeignKey(
         PdfDocumentValidator, on_delete=models.CASCADE
     )

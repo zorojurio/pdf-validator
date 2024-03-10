@@ -1,5 +1,4 @@
-import socket
-
+# -*- coding: utf-8 -*-
 from django.conf import settings
 from django.core.mail import EmailMessage
 from django.urls import reverse_lazy

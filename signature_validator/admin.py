@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.contrib import admin
 from django.forms import BaseInlineFormSet
 
@@ -13,6 +14,8 @@ class SignatureValidatorInlineFormSet(BaseInlineFormSet):
 
 
 class SignatureValidatorInline(admin.TabularInline):
+    """SignatureValidatorInline for PdfDocumentValidator."""
+
     model = SignatureValidator
     fields = (
         "serial_number",
@@ -31,16 +34,21 @@ class SignatureValidatorInline(admin.TabularInline):
     ordering = ("id",)
 
     def has_add_permission(self, request, obj=None):
+        """Disable the add permission."""
         return False
 
     def has_change_permission(self, request, obj=None):
+        """Disable the change permission."""
         return False
 
     def get_queryset(self, request):
+        """Filter the queryset."""
         return super().get_queryset(request)
 
 
 class PdfDocumentValidatorAdmin(admin.ModelAdmin):
+    """PdfDocumentValidatorAdmin for PdfDocumentValidator."""
+
     inlines = [SignatureValidatorInline]
     list_display = (
         "pk",

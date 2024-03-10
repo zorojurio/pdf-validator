@@ -1,10 +1,15 @@
+# -*- coding: utf-8 -*-
 from rest_framework import serializers
 
 from accounts.models import SignerUser, CustomUser
 
 
 class UserSerializer(serializers.ModelSerializer):
+    """Serializer for user model."""
+
     class Meta:
+        """Meta-class for UserSerializer."""
+
         model = CustomUser
         fields = (
             "id",

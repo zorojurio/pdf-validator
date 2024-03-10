@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -30,6 +31,8 @@ class CustomUser(AbstractUser):
 
 
 class SignerUser(models.Model):
+    """Model for Signer User."""
+
     public_key = models.TextField(
         unique=True, blank=True, null=True, help_text="Public key of the Signer"
     )
@@ -63,14 +66,18 @@ class SignerUser(models.Model):
     )
 
     def __str__(self):
+        """Return the string representation of the object."""
         return f"{self.pk}"
 
 
 class ValidatorUser(models.Model):
+    """Model for Validator User."""
+
     user = models.OneToOneField(
         CustomUser, on_delete=models.CASCADE, related_name="validator_user"
     )
     organization = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
+        """Return the string representation of the object."""
         return f"{self.user.username}-{self.user.email}"

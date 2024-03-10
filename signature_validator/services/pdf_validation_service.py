@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import hashlib
 
 from asn1crypto import cms
@@ -20,6 +21,7 @@ class PdfSignatureValidator:
     """Read from the file and validate the signature of the PDF file."""
 
     def __init__(self, file_path):
+        """Initialize the class with the file path."""
         self.file_path = file_path
         self.pdf_bytes = None
         self.is_signed = False
@@ -28,6 +30,7 @@ class PdfSignatureValidator:
         self.validated_data_list = None
 
     def __dict__(self):
+        """Return the dictionary of the class."""
         return {
             "file_path": self.file_path,
             "is_signed": self.is_signed,
@@ -61,7 +64,7 @@ class PdfSignatureValidator:
         return public_key, pem_encoded_public_key.decode("utf-8")
 
     def validate(self):
-        """Parse the PDF file and validate the signature of the PDF file"""
+        """Parse the PDF file and validate the signature of the PDF file."""
         self.get_pdf_bytes()
         reader = PdfReader(self.file_path)
         fields = reader.get_fields()
@@ -121,8 +124,8 @@ class PdfSignatureValidator:
 
     def extract_orginal_data_from_byte_range(self, br):
         """Extract the original data from the byte range."""
-        first_section = self.pdf_bytes[br[0] : br[0] + br[1]]
-        second_section = self.pdf_bytes[br[2] : br[2] + br[3]]
+        first_section = self.pdf_bytes[br[0] : br[0] + br[1]]  # noqa
+        second_section = self.pdf_bytes[br[2] : br[2] + br[3]]  # noqa
         orginal_data_before_signatures = first_section + second_section
         # signature_data = self.pdf_bytes[br[1] + 1: br[2] - 1]
         # from above algorithm, signature_data is in hex format
@@ -199,9 +202,15 @@ class PdfSignatureValidator:
             )
         return verified_data
 
-    def get_signed_attributes(self, native_data, signer_info):
+    @staticmethod
+    def get_signed_attributes(native_data, signer_info):
+        """Get the signed attributes from the native data.
+
+        from native data .
+        """
         signature_algorithm = signer_info["signature_algorithm"]["algorithm"]
         signature_bytes = signer_info["signature"]
+        # bytes for signed attrs
         attr = native_data["content"]["signer_infos"][0]["signed_attrs"].dump()
         sig_attributes = b"\x31" + attr[1:]
         return sig_attributes, signature_algorithm, signature_bytes

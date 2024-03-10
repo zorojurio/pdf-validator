@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import string
 
 from cryptography.hazmat.primitives import serialization
@@ -8,15 +9,20 @@ logger = module_logger(__name__)
 
 
 class ValidatePublicKey:
+    """Validate the public key."""
+
     def __init__(self, key):
+        """Initialize the class with the public key."""
         self.key = key
 
     def is_hex(self) -> bool:
+        """Check if the public key is in hex format."""
         hex_digits = set(string.hexdigits).union({" "})
         # if s is long, then it is faster to check against a set
         return all(c in hex_digits for c in self.key)
 
     def check_and_get_public_key(self) -> bool:
+        """Check if the public key is valid."""
         try:
             if self.is_hex():
                 binary_data = bytes.fromhex(self.key)
@@ -37,6 +43,7 @@ class ValidatePublicKey:
             return False
 
     def is_valid_pem_public_key(self):
+        """Check if the public key is a valid pem public key."""
         try:
             # Load the PEM public key
             serialization.load_pem_public_key(self.key.encode())
@@ -47,6 +54,7 @@ class ValidatePublicKey:
             return False
 
     def trim_key(self):
+        """Trim the public key."""
         self.key = (
             self.key.replace("-----BEGIN PUBLIC KEY-----", "")
             .replace("-----END PUBLIC KEY-----", "")
