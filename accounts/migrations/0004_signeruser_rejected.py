@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accounts', '0003_alter_signeruser_profile_image'),
+        ("accounts", "0003_alter_signeruser_profile_image"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='signeruser',
-            name='rejected',
-            field=models.BooleanField(default=False, help_text='Signer user is rejected or not'),
+            model_name="signeruser",
+            name="rejected",
+            field=models.BooleanField(
+                default=False, help_text="Signer user is rejected or not"
+            ),
         ),
     ]

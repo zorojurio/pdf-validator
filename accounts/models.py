@@ -7,8 +7,9 @@ class CustomUser(AbstractUser):
     """Custom User Model."""
 
     class UserType(models.TextChoices):
-        signer = ('signer', 'Signer')
-        validator = ('validator', 'Validator')
+        signer = ("signer", "Signer")
+        validator = ("validator", "Validator")
+
     user_type = models.CharField(
         max_length=10,
         choices=UserType.choices,
@@ -25,57 +26,51 @@ class CustomUser(AbstractUser):
     )
 
     def __str__(self):
-        return f'{self.username}-{self.email}'
+        return f"{self.username}-{self.email}"
 
 
 class SignerUser(models.Model):
     public_key = models.TextField(
-        unique=True,
-        blank=True,
-        null=True, help_text="Public key of the Signer")
+        unique=True, blank=True, null=True, help_text="Public key of the Signer"
+    )
     nic_number = models.CharField(
-        max_length=15,
-        help_text="National Identity Card Number of the Signer"
+        max_length=15, help_text="National Identity Card Number of the Signer"
     )
     user = models.OneToOneField(
         CustomUser,
         on_delete=models.CASCADE,
         related_name="signer_user",
         blank=True,
-        null=True
+        null=True,
     )
     certificate = models.FileField(
-        upload_to='certificates/',
-        help_text="Certificate of the Signer"
+        upload_to="certificates/", help_text="Certificate of the Signer"
     )
     nic_image = models.FileField(
-        upload_to='nics/',
-        help_text="National Identity Card Image of the Signer"
+        upload_to="nics/", help_text="National Identity Card Image of the Signer"
     )
     profile_image = models.FileField(
-        upload_to='profile_images/',
-        help_text="Profile Image of the Signer"
+        upload_to="profile_images/", help_text="Profile Image of the Signer"
     )
     verification_email_sent = models.BooleanField(
-        default=False,
-        help_text="Verification email sent to the signer user"
+        default=False, help_text="Verification email sent to the signer user"
     )
     active = models.BooleanField(
-        default=False,
-        help_text="Signer user is active or not"
+        default=False, help_text="Signer user is active or not"
     )
     rejected = models.BooleanField(
-        default=False,
-        help_text="Signer user is rejected or not"
+        default=False, help_text="Signer user is rejected or not"
     )
 
     def __str__(self):
-        return f'{self.pk}'
+        return f"{self.pk}"
 
 
 class ValidatorUser(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="validator_user")
+    user = models.OneToOneField(
+        CustomUser, on_delete=models.CASCADE, related_name="validator_user"
+    )
     organization = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
-        return f'{self.user.username}-{self.user.email}'
+        return f"{self.user.username}-{self.user.email}"

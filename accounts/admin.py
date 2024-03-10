@@ -3,11 +3,7 @@ from .models import CustomUser, SignerUser, ValidatorUser
 
 
 class CustomUserAdmin(admin.ModelAdmin):
-    list_display = [
-        'username',
-        'email',
-        'user_type'
-    ]
+    list_display = ["username", "email", "user_type"]
 
 
 admin.site.register(CustomUser, CustomUserAdmin)

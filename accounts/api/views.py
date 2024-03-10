@@ -8,6 +8,7 @@ from accounts.serializers import SignerUserSerializer
 
 class SignerUserViewSet(viewsets.ModelViewSet):
     """Viewset for signer user model."""
+
     permission_classes = []
     serializer_class = SignerUserSerializer
 

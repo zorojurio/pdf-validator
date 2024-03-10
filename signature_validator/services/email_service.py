@@ -13,6 +13,7 @@ logger = module_logger(__name__)
 
 class EmailService:
     """Send email using EmailMessage."""
+
     FROM_EMAIL = settings.EMAIL_HOST_USER
 
     @staticmethod
@@ -25,17 +26,17 @@ Hello,
 
 We hope this message finds you well.
 
-You have recently digitally signed a document, and we would like to invite you to PDf Validator to 
-confirm your identity and access the platform securely. And the document you signed is attached to 
+You have recently digitally signed a document, and we would like to invite you to PDf Validator to
+confirm your identity and access the platform securely. And the document you signed is attached to
 this email as well. To complete the sign-up process, please click on the following link:
 {request.build_absolute_uri(reverse_lazy('accounts:signup'))}
 
-PDf Validator is a platform designed to ensure the integrity and authenticity of PDF documents, 
+PDf Validator is a platform designed to ensure the integrity and authenticity of PDF documents,
 providing a secure environment for document validation and verification.
 
 We look forward to welcoming you to PDf Validator and assisting you with your document needs.
 
-If you have any questions or require assistance during the sign-up process, please feel free to 
+If you have any questions or require assistance during the sign-up process, please feel free to
 contact us at {EmailService.FROM_EMAIL}.
 
 Best regards,
@@ -49,10 +50,10 @@ PDf Validator Team """
                 body=message,
                 from_email=EmailService.FROM_EMAIL,
                 to=emails,
-                bcc=emails
+                bcc=emails,
             )
-            with open(path, 'rb') as file:
-                email.attach(file.name, file.read(), 'application/pdf')
+            with open(path, "rb") as file:
+                email.attach(file.name, file.read(), "application/pdf")
             email.send()
         except Exception as e:
             logger.error(f"Error creating EmailMessage {e}")

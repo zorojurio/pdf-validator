@@ -12,7 +12,7 @@ class ValidatePublicKey:
         self.key = key
 
     def is_hex(self) -> bool:
-        hex_digits = set(string.hexdigits).union({' '})
+        hex_digits = set(string.hexdigits).union({" "})
         # if s is long, then it is faster to check against a set
         return all(c in hex_digits for c in self.key)
 
@@ -23,7 +23,7 @@ class ValidatePublicKey:
                 public_key = serialization.load_der_public_key(binary_data)
                 public_key_pem = public_key.public_bytes(
                     encoding=serialization.Encoding.PEM,
-                    format=serialization.PublicFormat.SubjectPublicKeyInfo
+                    format=serialization.PublicFormat.SubjectPublicKeyInfo,
                 )
                 self.key = public_key_pem.decode()
                 logger.info(f"Public key: {self.key} is a valid hex public key.")
@@ -47,6 +47,9 @@ class ValidatePublicKey:
             return False
 
     def trim_key(self):
-        self.key = self.key.replace(
-            "-----BEGIN PUBLIC KEY-----", ""
-        ).replace("-----END PUBLIC KEY-----", "").replace("\n", "").strip()
+        self.key = (
+            self.key.replace("-----BEGIN PUBLIC KEY-----", "")
+            .replace("-----END PUBLIC KEY-----", "")
+            .replace("\n", "")
+            .strip()
+        )

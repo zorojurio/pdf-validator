@@ -16,15 +16,15 @@ def create_profile(sender, instance, created, **kwargs):
     if not created:
         if instance.active:
             send_mail(
-                'Signer Verification',
-                'You have been verified as a signer',
+                "Signer Verification",
+                "You have been verified as a signer",
                 from_email=settings.EMAIL_HOST_USER,
                 recipient_list=[instance.user.email],
             )
         if instance.rejected:
             send_mail(
-                'Signer Verification',
-                'You have been rejected as a signer',
+                "Signer Verification",
+                "You have been rejected as a signer",
                 from_email=settings.EMAIL_HOST_USER,
                 recipient_list=[instance.user.email],
             )

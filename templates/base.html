@@ -14,7 +14,7 @@
     <title>
         Validator
         {% block head_title %}
-        
+
         {% endblock %}
     </title>
     <meta name="description" content="{% block meta_description %}{% endblock %}">
@@ -41,18 +41,18 @@
 
     <!-- django Messages -->
     {% include 'base/messages.html' %}
-    
+
     <!-- major content -->
     {% block content %}{% endblock content %}
-    
+
     <!-- FOOTER -->
     {% include 'base/footer.html' %}
 
     <!-- common JS files -->
-    {% include 'base/js.html' %}   
+    {% include 'base/js.html' %}
 
     <!-- extra scripts -->
-    {% block extra_head_bottom %}{% endblock extra_head_bottom %} 
+    {% block extra_head_bottom %}{% endblock extra_head_bottom %}
 
 </body>
 </html>

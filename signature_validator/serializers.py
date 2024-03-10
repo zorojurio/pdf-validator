@@ -23,18 +23,21 @@ class SignatureValidateSerializer(serializers.ModelSerializer):
             "signature_name",
         )
         read_only_fields = (
-            "id", "hash_valid", "serial_number",
-            "signature_valid", "signing_time", "signature_name"
+            "id",
+            "hash_valid",
+            "serial_number",
+            "signature_valid",
+            "signing_time",
+            "signature_name",
         )
 
 
 class PdfValidateSerializer(serializers.ModelSerializer):
     """Serializer for PDF signature validator model."""
+
     user = UserSerializer(read_only=True, source="validator_user.user")
     validated_list = SignatureValidateSerializer(
-        many=True,
-        read_only=True,
-        source="signaturevalidator_set"
+        many=True, read_only=True, source="signaturevalidator_set"
     )
 
     class Meta:
@@ -48,15 +51,21 @@ class PdfValidateSerializer(serializers.ModelSerializer):
             "is_signed",
             "is_hashes_valid",
             "is_signatures_valid",
-            "validated_list"
+            "validated_list",
         )
-        read_only_fields = ("id", "is_signed", "is_hashes_valid", "is_signatures_valid", "user")
+        read_only_fields = (
+            "id",
+            "is_signed",
+            "is_hashes_valid",
+            "is_signatures_valid",
+            "user",
+        )
 
     def create(self, validated_data):
         """Override create method to save logged-in user to signature."""
         pdf_validator = PdfDocumentValidator.objects.create(**validated_data)
-        user: CustomUser = self.context.get('user')
-        if user and hasattr(user, 'validator_user'):
+        user: CustomUser = self.context.get("user")
+        if user and hasattr(user, "validator_user"):
             pdf_validator.validator_user = user.validator_user
         validator = PdfSignatureValidator(pdf_validator.pdf_file.path)
         validator.validate()
@@ -66,7 +75,7 @@ class PdfValidateSerializer(serializers.ModelSerializer):
 
         # createing related signature validations
         for validated_data in validator.validated_data_list:
-            validated_data['pdf_document_validator'] = pdf_validator
+            validated_data["pdf_document_validator"] = pdf_validator
             SignatureValidator.objects.create(**validated_data)
         pdf_validator.save()
         return pdf_validator

@@ -17,7 +17,7 @@
                         {% csrf_token %}
                         {{ form | crispy }}
                         <small class="text-muted">
-                            Don't have an account 
+                            Don't have an account
                             <a class="btn btn-sm btn-link" href="{% url 'accounts:signup' %}">Sign Up for PDF Validator</a>
                         </small>
                         <div class="text-right mt-5">
