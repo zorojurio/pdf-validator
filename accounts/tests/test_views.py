@@ -77,7 +77,8 @@ class TestCustomLoginView:
         assert response.status_code == 200
         assert response.context["form"].errors == {
             "__all__": [
-                "Please enter a correct username and password. Note that both fields may be case-sensitive."
+                "Please enter a correct username and password. Note that both fields may "
+                "be case-sensitive."
             ]
         }
         assert (
@@ -136,7 +137,7 @@ class TestSignUpView:
         [("signer", "SignerUser"), ("validator", "ValidatorUser")],
     )
     @pytest.mark.django_db
-    def test_signup(self, client, user_type, related_profile):
+    def test_signup(self, client, user_type, related_profile, mailoutbox):
         """Test signup as a signer user and a validator user."""
         username = "testuser-signer"
         response = client.post(
@@ -167,3 +168,59 @@ class TestSignUpView:
         # check if related profile is created
         Model = apps.get_model("accounts", related_profile)
         assert Model.objects.filter(user=created_user).exists()
+        # check if email is sent to the user
+        assert mailoutbox[0].subject == "Activation link has been sent to your email."
+        assert mailoutbox[0].to == [created_user.email]
+        assert len(mailoutbox) == 1
+
+    @pytest.mark.parametrize(
+        "user_type",
+        ("signer", "validator"),
+    )
+    @pytest.mark.django_db
+    def test_signup_with_existing_username(
+        self, client, signer_activated_user, user_type
+    ):
+        """Test signup with an existing username."""
+        response = client.post(
+            self.signup_url,
+            data={
+                "username": signer_activated_user.username,
+                "first_name": "Test",
+                "last_name": "User",
+                "email": "test-signer@gmail.com",
+                "password1": "NewPassword@123",
+                "password2": "NewPassword@123",
+                "user_type": user_type,
+            },
+        )
+        assert response.status_code == 200
+        assert response.context["form"].errors == {
+            "username": ["A user with that username already exists."]
+        }
+
+    @pytest.mark.parametrize(
+        "user_type",
+        ("signer", "validator"),
+    )
+    @pytest.mark.django_db
+    def test_signup_with_already_existing_email(
+        self, client, signer_activated_user, user_type
+    ):
+        """Test signup with an existing email."""
+        response = client.post(
+            self.signup_url,
+            data={
+                "username": "testuser-signer",
+                "first_name": "Test",
+                "last_name": "User",
+                "email": signer_activated_user.email,
+                "password1": "NewPassword@123",
+                "password2": "NewPassword@123",
+                "user_type": user_type,
+            },
+        )
+        assert response.status_code == 200
+        assert response.context["form"].errors == {
+            "email": ["User with this Email address already exists."]
+        }
