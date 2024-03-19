@@ -1,9 +1,10 @@
-from django.urls import reverse
 import pytest
+from django.apps import apps
+from django.contrib import auth
+from django.urls import reverse
 
 from accounts.models import CustomUser
 from accounts.tests.factories import UserFactory
-from django.contrib import auth
 
 
 class TestCustomLoginView:
@@ -130,9 +131,12 @@ class TestSignUpView:
             ("validator", "Validator"),
         ]
 
-    @pytest.mark.parametrize("user_type", ["signer", "validator"])
+    @pytest.mark.parametrize(
+        "user_type, related_profile",
+        [("signer", "SignerUser"), ("validator", "ValidatorUser")],
+    )
     @pytest.mark.django_db
-    def test_signup(self, client, user_type):
+    def test_signup(self, client, user_type, related_profile):
         """Test signup as a signer user and a validator user."""
         username = "testuser-signer"
         response = client.post(
@@ -160,3 +164,6 @@ class TestSignUpView:
         assert response.url == reverse("accounts:login")
         # user should not be authenticated
         assert response.wsgi_request.user.is_authenticated is False
+        # check if related profile is created
+        Model = apps.get_model("accounts", related_profile)
+        assert Model.objects.filter(user=created_user).exists()

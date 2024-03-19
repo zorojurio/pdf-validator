@@ -15,7 +15,7 @@ from django_filters.views import FilterView
 from validator import settings
 from .filters import SignerUserFilter
 from .forms import CustomUserCreationForm, SignerUserForm
-from .models import CustomUser, SignerUser, ValidatorUser
+from .models import CustomUser, SignerUser
 from .tokens import account_activation_token
 
 
@@ -34,12 +34,7 @@ class SignUpView(CreateView):
     def form_valid(self, form):
         """Save the form and send activation email."""
         user = form.save()
-        if user.user_type == CustomUser.UserType.signer:
-            signer = SignerUser.objects.create(user=user)
-            signer.verification_email_sent = True
-            signer.save()
-        elif user.user_type == CustomUser.UserType.validator:
-            ValidatorUser.objects.create(user=user)
+
         current_site = self.request.build_absolute_uri("/")[:-1]
         mail_subject = "Activation link has been sent to your email."
         message = render_to_string(
