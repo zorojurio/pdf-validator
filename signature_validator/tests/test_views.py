@@ -27,3 +27,30 @@ class TestValidateSignatureView:
         assert response.context["form"].fields["pdf_file"]
         # check if pdf_file is required
         assert response.context["form"].fields["pdf_file"].required
+
+    @pytest.mark.django_db
+    def test_pdf_file_required_when_submitting(self, authenticated_signer_client):
+        """Test if pdf_file is required when submitting."""
+        response = authenticated_signer_client.post(self.validate_url)
+        assert response.status_code == 200
+        assert response.context["form"].errors["pdf_file"] == [
+            "This field is required."
+        ]
+
+    @pytest.mark.django_db
+    def test_pdf_file_should_be_pdf_when_submitting(
+        self, authenticated_signer_client, doc_file
+    ):
+        """Test if pdf_file should be pdf when submitting."""
+        response = authenticated_signer_client.post(
+            self.validate_url, {"pdf_file": doc_file}, format="multipart"
+        )
+        assert response.status_code == 200
+        assert response.context["form"].errors["pdf_file"] == [
+            "Invalid file format, only PDF is allowed."
+        ]
+
+    @pytest.mark.django_db
+    def test_validation_of_pdf_file_with_one_signature(self):
+        """Test validation of PDF file with one signature."""
+        pass
