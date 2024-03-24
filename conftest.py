@@ -9,7 +9,11 @@ from validator import settings
 @pytest.fixture
 def activated_user_signer_type():
     """Return an active signer user."""
-    return UserFactory(is_active=True, username="signer_activated_user")
+    return UserFactory(
+        is_active=True,
+        username="signer_activated_user",
+        email="chanukachathuranga@icloud.com",
+    )
 
 
 @pytest.fixture

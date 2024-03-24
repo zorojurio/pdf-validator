@@ -122,7 +122,8 @@ class PdfValidateForm(forms.ModelForm):
     def set_messages(emails_to_be_sent, signature_validator):
         """Set messages for the signature."""
         if signature_validator.email_of_signer:
-            emails_to_be_sent.append(signature_validator.email_of_signer)
+            if signature_validator.email_of_signer not in emails_to_be_sent:
+                emails_to_be_sent.append(signature_validator.email_of_signer)
             signature_validator.message = (
                 f"{signature_validator.email_of_signer} is not registered in the "
                 f"system, we have already sent an invitation email, please contact "
