@@ -94,7 +94,7 @@ class TestCustomLogoutView:
 
     @pytest.mark.django_db
     def test_logout_of_a_logged_in_user(
-        self, authenticated_signer_client, signer_activated_user
+        self, authenticated_signer_client, activated_user_signer_type
     ):
         """Test logout function of a logged-in user."""
         user = auth.get_user(authenticated_signer_client)
@@ -179,13 +179,13 @@ class TestSignUpView:
     )
     @pytest.mark.django_db
     def test_signup_with_existing_username(
-        self, client, signer_activated_user, user_type
+        self, client, activated_user_signer_type, user_type
     ):
         """Test signup with an existing username."""
         response = client.post(
             self.signup_url,
             data={
-                "username": signer_activated_user.username,
+                "username": activated_user_signer_type.username,
                 "first_name": "Test",
                 "last_name": "User",
                 "email": "test-signer@gmail.com",
@@ -205,7 +205,7 @@ class TestSignUpView:
     )
     @pytest.mark.django_db
     def test_signup_with_already_existing_email(
-        self, client, signer_activated_user, user_type
+        self, client, activated_user_signer_type, user_type
     ):
         """Test signup with an existing email."""
         response = client.post(
@@ -214,7 +214,7 @@ class TestSignUpView:
                 "username": "testuser-signer",
                 "first_name": "Test",
                 "last_name": "User",
-                "email": signer_activated_user.email,
+                "email": activated_user_signer_type.email,
                 "password1": "NewPassword@123",
                 "password2": "NewPassword@123",
                 "user_type": user_type,

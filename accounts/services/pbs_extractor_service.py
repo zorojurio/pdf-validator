@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import warnings
 from asn1crypto import cms
 from accounts.services.pbs_validation_service import ValidatePublicKey
 from signature_validator.services.pdf_validation_service import PdfSignatureValidator
@@ -50,7 +51,10 @@ class PublicKeyExtractor:
             .replace(b"\\(", b"(")
             .replace(b"\\)", b")")
         )
-        cert = x509.load_der_x509_certificate(edited, default_backend())
+        # negative number is set by adobe, to bypass the warning log this is added
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            cert = x509.load_der_x509_certificate(edited, default_backend())
         public_key_bytes = cert.public_key().public_bytes(
             encoding=serialization.Encoding.PEM,
             format=serialization.PublicFormat.SubjectPublicKeyInfo,
@@ -59,7 +63,11 @@ class PublicKeyExtractor:
         self.public_key = public_key_string
 
     def get_public_key(self):
-        """Extract public key from the certificate file."""
+        """Extract public key from the certificate file.
+
+        :returns
+            str: public key
+        """
         if self.file_name.endswith(".cer"):
             self.get_public_key_from_cer()
         elif self.file_name.endswith(".p7c"):
