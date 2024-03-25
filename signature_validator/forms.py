@@ -104,7 +104,11 @@ class PdfValidateForm(forms.ModelForm):
             )
 
     @staticmethod
-    def set_signer_verification(emails_to_be_sent, signature_validator, validated_data):
+    def set_signer_verification(
+        emails_to_be_sent: list,
+        signature_validator: SignatureValidator,
+        validated_data: dict,
+    ):
         """Check if the signer exists in the system and set proper messages."""
         user = CustomUser.objects.filter(email=validated_data["email_of_signer"])
         sign_user = SignerUser.objects.filter(
@@ -112,6 +116,8 @@ class PdfValidateForm(forms.ModelForm):
         )
         if user.exists() and sign_user.exists():
             signature_validator.verified_signer = True
+            signature_validator.signer_user = sign_user.first()
+            signature_validator.save()
         else:
             PdfValidateForm.set_messages(emails_to_be_sent, signature_validator)
         signature_validator.save()

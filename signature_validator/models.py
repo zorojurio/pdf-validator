@@ -2,7 +2,7 @@
 from django.db import models
 from django.urls import reverse
 
-from accounts.models import CustomUser
+from accounts.models import CustomUser, SignerUser
 
 
 class PdfDocumentValidator(models.Model):
@@ -42,6 +42,9 @@ class SignatureValidator(models.Model):
     signing_time = models.DateTimeField()
     signature_name = models.CharField(max_length=255)
     signed_by = models.CharField(max_length=255, blank=True, null=True)
+    signer_user = models.ForeignKey(
+        SignerUser, blank=True, null=True, on_delete=models.SET_NULL
+    )
     email_of_signer = models.CharField(max_length=255, blank=True, null=True)
     signature_algorithm = models.CharField(max_length=255, blank=True, null=True)
     digest_algorithm = models.CharField(max_length=255, blank=True, null=True)

@@ -3,6 +3,7 @@ from django.conf import settings
 from django.db.models import QuerySet
 from django.urls import reverse
 
+from accounts.models import SignerUser
 from signature_validator.models import PdfDocumentValidator, SignatureValidator
 
 
@@ -166,6 +167,7 @@ class TestValidateSignatureView:
                 assert signature.signature_valid
                 assert signature.verified_signer
                 assert signature.public_key == signer.public_key
+                assert signature.signer_user == signer
             # email should be not be sent to signer of the document as signer already in system
             assert len(mailoutbox) == 0
 
@@ -303,8 +305,11 @@ class TestValidateSignatureView:
             assert signatures.count() == signature_count
             # email should be not be sent to signer of the document as signer already in system
             for signature in signatures:
+                signer_user = SignerUser.objects.get(public_key=signature.public_key)
                 assert signature.hash_valid
                 assert signature.signature_valid
                 assert signature.verified_signer
+                assert signature.signer_user == signer_user
+                assert signature.public_key == signer_user.public_key
             # email should be not be sent to signer of the document as signer already in system
             assert len(mailoutbox) == 0
