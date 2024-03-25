@@ -60,7 +60,7 @@ class SignUpView(CreateView):
         return reverse_lazy("accounts:login")
 
 
-class SignerUserView(LoginRequiredMixin, UpdateView):
+class SignerUserUpdateView(LoginRequiredMixin, UpdateView):
     """View for adding signer user."""
 
     form_class = SignerUserForm

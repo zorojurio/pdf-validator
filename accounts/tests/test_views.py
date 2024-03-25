@@ -6,6 +6,8 @@ from django.urls import reverse
 from accounts.models import CustomUser
 from accounts.tests.factories import UserFactory
 
+pytestmark = pytest.mark.django_db
+
 
 class TestCustomLoginView:
     """Test the CustomLoginView."""
@@ -18,7 +20,6 @@ class TestCustomLoginView:
         assert response.status_code == 200
         assert response.template_name == ["accounts/login.html"]
 
-    @pytest.mark.django_db
     def test_invalid_login_credentials(self, client):
         """Test whether the user is logged in."""
         response = client.post(
@@ -33,7 +34,6 @@ class TestCustomLoginView:
             ]
         }
 
-    @pytest.mark.django_db
     def test_valid_login_with_active_user(self, client):
         """Test login with active user."""
         password = "NewPassword@123"
@@ -58,7 +58,6 @@ class TestCustomLoginView:
         assert response.wsgi_request.user.user_type == user.user_type
         assert response.wsgi_request.user.is_active == user.is_active
 
-    @pytest.mark.django_db
     def test_valid_login_with_inactive_user(self, client):
         """Test login with inactive user."""
         password = "NewPassword@123"
@@ -92,7 +91,6 @@ class TestCustomLogoutView:
 
     logout_url = reverse("accounts:logout")
 
-    @pytest.mark.django_db
     def test_logout_of_a_logged_in_user(
         self, authenticated_signer_client, activated_user_signer_type
     ):
@@ -136,7 +134,6 @@ class TestSignUpView:
         "user_type, related_profile",
         [("signer", "SignerUser"), ("validator", "ValidatorUser")],
     )
-    @pytest.mark.django_db
     def test_signup(self, client, user_type, related_profile, mailoutbox):
         """Test signup as a signer user and a validator user."""
         username = "testuser-signer"
@@ -177,7 +174,6 @@ class TestSignUpView:
         "user_type",
         ("signer", "validator"),
     )
-    @pytest.mark.django_db
     def test_signup_with_existing_username(
         self, client, activated_user_signer_type, user_type
     ):
@@ -203,7 +199,6 @@ class TestSignUpView:
         "user_type",
         ("signer", "validator"),
     )
-    @pytest.mark.django_db
     def test_signup_with_already_existing_email(
         self, client, activated_user_signer_type, user_type
     ):
@@ -224,3 +219,23 @@ class TestSignUpView:
         assert response.context["form"].errors == {
             "email": ["User with this Email address already exists."]
         }
+
+
+class TestSignerUserUpdateView:
+    """Test the SignerUserUpdateView."""
+
+    def test_signer_user_update_get_page(
+        self,
+        authenticated_signer_client,
+        signer,
+    ):
+        """Test whether the signer user update page is rendered correctly."""
+        response = authenticated_signer_client.get(
+            reverse("accounts:add-signer", kwargs={"pk": signer.pk})
+        )
+        assert response.status_code == 200
+        assert response.template_name == ["accounts/signer.html"]
+        # check the form fields are included in the context form
+        assert sorted(response.context["form"].fields.keys()) == sorted(
+            ["certificate", "nic_image", "nic_number", "profile_image"]
+        )
