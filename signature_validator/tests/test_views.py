@@ -175,7 +175,7 @@ class TestValidateSignatureView:
             ("Test_File_one_person_one_signature_changed", 1),
         ],
     )
-    def test_validation_of_edited__signed_pdf_file_with_signer_verified(
+    def test_validation_of_edited_signed_pdf_file_with_signer_verified(
         self,
         authenticated_signer_client,
         activated_user_signer_type,
@@ -207,6 +207,43 @@ class TestValidateSignatureView:
 
             assert validator.user == activated_user_signer_type
             assert pdf_file in validator.pdf_file.name
+
+            signatures: QuerySet[SignatureValidator] = (
+                SignatureValidator.objects.filter(pdf_document_validator=validator)
+            )
+            assert not signatures.exists()
+            # email should be not be sent to signer of the document as signer already in system
+            assert len(mailoutbox) == 0
+
+    def test_validation_of_not_signed_pdf_with_signer_verified(
+        self,
+        authenticated_signer_client,
+        activated_user_signer_type,
+        signer,
+        mailoutbox,
+    ):
+        """Test validation of not signed PDF file with signer already verified."""
+        mailoutbox.clear()
+        pdf_file_path = f"{settings.TEST_FILES_ROOT}/test_file_no_signature.pdf"
+        with open(pdf_file_path, "rb") as file:
+            response = authenticated_signer_client.post(
+                self.validate_url, {"pdf_file": file}, format="multipart"
+            )
+            assert response.status_code == 302
+            pdf_validator: QuerySet[PdfDocumentValidator] = (
+                PdfDocumentValidator.objects.filter(user=activated_user_signer_type)
+            )
+            assert pdf_validator.exists()
+            assert pdf_validator.count() == 1
+
+            validator: PdfDocumentValidator = pdf_validator.last()
+            assert response.url == validator.get_absolute_url()
+            assert not validator.is_signed
+            assert not validator.is_hashes_valid
+            assert not validator.is_signatures_valid
+            assert not validator.all_signers_verified
+            assert validator.user == activated_user_signer_type
+            assert "test_file_no_signature" in validator.pdf_file.name
 
             signatures: QuerySet[SignatureValidator] = (
                 SignatureValidator.objects.filter(pdf_document_validator=validator)
