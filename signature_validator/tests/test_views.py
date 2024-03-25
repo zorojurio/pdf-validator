@@ -165,6 +165,7 @@ class TestValidateSignatureView:
                 assert signature.hash_valid
                 assert signature.signature_valid
                 assert signature.verified_signer
+                assert signature.public_key == signer.public_key
             # email should be not be sent to signer of the document as signer already in system
             assert len(mailoutbox) == 0
 
@@ -249,5 +250,61 @@ class TestValidateSignatureView:
                 SignatureValidator.objects.filter(pdf_document_validator=validator)
             )
             assert not signatures.exists()
+            # email should be not be sent to signer of the document as signer already in system
+            assert len(mailoutbox) == 0
+
+    @pytest.mark.parametrize(
+        "pdf_file, signature_count",
+        [
+            ("test_two_person_two_sig", 2),
+            ("test_two_person_many_sig", 3),
+        ],
+    )
+    def test_validation_of_pdf_signed_by_two_with_signers_verified(
+        self,
+        authenticated_signer_client,
+        activated_user_signer_type,
+        signer,
+        activated_user2_signer_type,
+        signer2,
+        mailoutbox,
+        pdf_file,
+        signature_count,
+    ):
+        """Test validation of a PDF file signed by two signers when signers are verified."""
+        mailoutbox.clear()
+        pdf_file_path = f"{settings.TEST_FILES_ROOT}/{pdf_file}.pdf"
+        with open(pdf_file_path, "rb") as file:
+            response = authenticated_signer_client.post(
+                self.validate_url, {"pdf_file": file}, format="multipart"
+            )
+            assert response.status_code == 302
+            pdf_validator: QuerySet[PdfDocumentValidator] = (
+                PdfDocumentValidator.objects.filter(user=activated_user_signer_type)
+            )
+            assert pdf_validator.exists()
+            assert pdf_validator.count() == 1
+
+            validator: PdfDocumentValidator = pdf_validator.last()
+            assert response.url == validator.get_absolute_url()
+            assert validator.is_signed
+            assert validator.is_hashes_valid
+            assert validator.is_signatures_valid
+            assert validator.all_signers_verified
+
+            assert validator.distinct_people_signed == 2
+            assert validator.user == activated_user_signer_type
+            assert pdf_file in validator.pdf_file.name
+
+            signatures: QuerySet[SignatureValidator] = (
+                SignatureValidator.objects.filter(pdf_document_validator=validator)
+            )
+            assert signatures.exists()
+            assert signatures.count() == signature_count
+            # email should be not be sent to signer of the document as signer already in system
+            for signature in signatures:
+                assert signature.hash_valid
+                assert signature.signature_valid
+                assert signature.verified_signer
             # email should be not be sent to signer of the document as signer already in system
             assert len(mailoutbox) == 0
