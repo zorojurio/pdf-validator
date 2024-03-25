@@ -82,14 +82,12 @@ class PdfValidateForm(forms.ModelForm):
     @staticmethod
     def is_all_signers_verified(pdf_validator) -> bool:
         """Check if all signers are verified."""
-        return all(
-            [
-                signature[0]
-                for signature in SignatureValidator.objects.filter(
-                    pdf_document_validator=pdf_validator
-                ).values_list("verified_signer")
-            ]
-        )
+        signatures = SignatureValidator.objects.filter(
+            pdf_document_validator=pdf_validator
+        ).values_list("verified_signer")
+        if not signatures.exists():
+            return False
+        return all([signature[0] for signature in signatures])
 
     @staticmethod
     def validate_and_trim_public_key(validated_data):

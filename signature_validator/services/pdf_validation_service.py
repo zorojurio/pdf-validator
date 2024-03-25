@@ -76,6 +76,9 @@ class PdfSignatureValidator:
         validated_data_list = []
         for k, v in fields.items():
             logger.info(f"\nProcessing Signature {k}")
+            if "/V" not in v:
+                logger.info("No Signature Found")
+                continue
             value = v["/V"]
             signing_time = parse(value["/M"][2:].strip("'").replace("'", ":"))
             logger.info(f"Signing time: {signing_time}")

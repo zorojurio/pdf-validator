@@ -61,7 +61,7 @@ class TestValidateSignatureView:
             ("test_one_person_three_signatures", 3),
         ],
     )
-    def test_validation_of_pdf_file_when_signer_not_verified(
+    def test_validation_of_signed_pdf_file_when_signer_not_verified(
         self,
         authenticated_signer_client,
         activated_user_signer_type,
@@ -69,7 +69,7 @@ class TestValidateSignatureView:
         pdf_file,
         signature_count,
     ):
-        """Test validation of PDF file with one signature."""
+        """Test validation of PDF file when signer is not verified."""
         pdf_file_path = f"{settings.TEST_FILES_ROOT}/{pdf_file}.pdf"
         with open(pdf_file_path, "rb") as file:
             response = authenticated_signer_client.post(
@@ -121,7 +121,7 @@ class TestValidateSignatureView:
             ("test_one_person_three_signatures", 3),
         ],
     )
-    def test_validation_of_pdf_file_with_signer_verified(
+    def test_validation_of_signed_pdf_file_with_signer_verified(
         self,
         authenticated_signer_client,
         activated_user_signer_type,
@@ -130,8 +130,7 @@ class TestValidateSignatureView:
         pdf_file,
         signature_count,
     ):
-        """Test validation of PDF file with one signature."""
-        # mailoutbox is cleared, to delete signer actvation email
+        """Test validation of PDF file with signer already verified."""
         mailoutbox.clear()
         pdf_file_path = f"{settings.TEST_FILES_ROOT}/{pdf_file}.pdf"
         with open(pdf_file_path, "rb") as file:
@@ -166,5 +165,52 @@ class TestValidateSignatureView:
                 assert signature.hash_valid
                 assert signature.signature_valid
                 assert signature.verified_signer
+            # email should be not be sent to signer of the document as signer already in system
+            assert len(mailoutbox) == 0
+
+    @pytest.mark.parametrize(
+        "pdf_file, signature_count",
+        [
+            ("test_one_person_three_signatures_changed", 1),
+            ("Test_File_one_person_one_signature_changed", 1),
+        ],
+    )
+    def test_validation_of_edited__signed_pdf_file_with_signer_verified(
+        self,
+        authenticated_signer_client,
+        activated_user_signer_type,
+        signer,
+        mailoutbox,
+        pdf_file,
+        signature_count,
+    ):
+        """Test validation of PDF file with signer already verified."""
+        mailoutbox.clear()
+        pdf_file_path = f"{settings.TEST_FILES_ROOT}/{pdf_file}.pdf"
+        with open(pdf_file_path, "rb") as file:
+            response = authenticated_signer_client.post(
+                self.validate_url, {"pdf_file": file}, format="multipart"
+            )
+            assert response.status_code == 302
+            pdf_validator: QuerySet[PdfDocumentValidator] = (
+                PdfDocumentValidator.objects.filter(user=activated_user_signer_type)
+            )
+            assert pdf_validator.exists()
+            assert pdf_validator.count() == 1
+
+            validator: PdfDocumentValidator = pdf_validator.last()
+            assert response.url == validator.get_absolute_url()
+            assert validator.is_signed
+            assert not validator.is_hashes_valid
+            assert not validator.is_signatures_valid
+            assert not validator.all_signers_verified
+
+            assert validator.user == activated_user_signer_type
+            assert pdf_file in validator.pdf_file.name
+
+            signatures: QuerySet[SignatureValidator] = (
+                SignatureValidator.objects.filter(pdf_document_validator=validator)
+            )
+            assert not signatures.exists()
             # email should be not be sent to signer of the document as signer already in system
             assert len(mailoutbox) == 0
