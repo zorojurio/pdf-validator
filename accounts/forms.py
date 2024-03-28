@@ -13,6 +13,12 @@ logger = module_logger(__name__)
 class CustomUserCreationForm(UserCreationForm):
     """Custom User Creation Form."""
 
+    user_type = forms.ChoiceField(
+        label="User Type",
+        choices=CustomUser.UserType.choices,
+        initial=CustomUser.UserType.signer,
+    )
+
     class Meta:
         model = CustomUser
         fields = ("username", "email", "user_type", "first_name", "last_name")

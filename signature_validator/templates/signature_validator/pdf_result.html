@@ -102,19 +102,22 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td><span class="font-weight-bold">Signature Valid:</span>
+                                                    <td>
+                                                        <span class="font-weight-bold">Signature Valid:</span>
                                                     </td>
-                                                    <td colspan="3">{% if signaturevalidator.signature_valid %}
-                                                        <i class="fas fa-check-circle green-circle"></i>
+                                                    <td colspan="3">
+                                                        {% if signaturevalidator.signature_valid %}
+                                                            <i class="fas fa-check-circle green-circle"></i>
 
-                                                        <span class="text-success"> valid.
+                                                            <span class="text-success"> valid.
+                                                                        </span>
+                                                        {% else %}
+                                                            <i class="fas fa-times-circle red-circle"></i>
+
+                                                            <span class="text-danger"> invalid.
                                                                     </span>
-                                                    {% else %}
-                                                        <i class="fas fa-times-circle red-circle"></i>
-
-                                                        <span class="text-danger"> invalid.
-                                                                </span>
-                                                    {% endif %}</td>
+                                                        {% endif %}
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <td><span class="font-weight-bold">Verified Signer:</span>
@@ -145,8 +148,13 @@
                                                 {% endif %}
                                                 <tr>
                                                     <td><span class="font-weight-bold">Signed by:</span> </td>
-                                                    <td colspan="3">{{ signaturevalidator.signed_by }}</td>
+                                                    <td colspan="3">
+                                                        <a href="{% url 'accounts:detail' signaturevalidator.signer_user.pk  %}">
+                                                            {{ signaturevalidator.signed_by }}
+                                                        </a>
+                                                    </td>
                                                 </tr>
+
                                                 <tr>
                                                     <td><span class="font-weight-bold">Signer's Email:</span></td>
                                                     <td colspan="3"> {{ signaturevalidator.email_of_signer }}</td>

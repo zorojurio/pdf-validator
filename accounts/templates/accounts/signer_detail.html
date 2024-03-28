@@ -18,15 +18,38 @@
                                  src="{{ signer.profile_image.url }}" alt="profile-pic"/>
                         </div>
                         <div class="media-body mt-5">
-                            <h2 class="account-heading"> {{ signer.user.username }}</h2>
-                            <h4 class="text-secondary">Email: {{ signer.user.email }}</h4>
-                            <h4 class="text-secondary"> NIC: {{ signer.nic_number }} </h4>
-                            <h4 class="text-secondary">
-                                Public Key of the signer: {{ signer.public_key }}
+                            <h3> Username:
+                                <span class="text-secondary">
+                                {{ signer.user.username }}
+                                </span>
+                            </h3>
+                            <h4>
+                                Email:
+                                <span class="text-secondary">
+                                {{ signer.user.email }}
+                                </span>
+                            </h4>
+                            <h4>
+                                NIC:
+                                <span class="text-secondary">
+                                {{ signer.nic_number }}
+                                </span>
+                            </h4>
+                            <h4>
+                                Public Key of the signer:
+                                <span class="text-secondary">
+                                {{ signer.public_key }}
+                                </span>
+                            </h4>
+                            <h4>
+                                Date Joined:
+                                <span class="text-secondary">
+                                {{ signer.user.date_joined }}
+                                </span>
                             </h4>
                             <div class="text-right mt-5">
                                 <a href="{% url 'accounts:signers' %}"
-                                   class="btn btn-danger btn-block ">
+                                   class="btn btn-primary btn-block ">
                                     Back
                                 </a>
                             </div>
