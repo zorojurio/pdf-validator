@@ -23,6 +23,7 @@ django = "4.2.2"
 python-dotenv = "^1.0.1"
 pre-commit = "^3.6.2"
 toml = "^0.10.2"
+psycopg2-binary = "^2.9.9"
 
 
 [tool.poetry.group.test.dependencies]
