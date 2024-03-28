@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+
+{% block title %}Signer Detail{% endblock %}
+
+
+{% block content %}
+    <div class="container mt-2 mb-2">
+        <div class="row">
+            <div class="col-md-8 col-12 mr-auto ml-auto">
+                 <h2 class="account-heading text-center"> Profile Details </h2>
+                <div class="card mt-5">
+                    <div class="card-body">
+                        <div class="media">
+                            <img class="rounded-circle border-light account-img img-thumbnail"
+                                 width="300" height="300"
+                                 src="{{ signer.profile_image.url }}" alt="profile-pic"/>
+                        </div>
+                        <div class="media-body mt-5">
+                            <h2 class="account-heading"> {{ signer.user.username }}</h2>
+                            <h4 class="text-secondary">Email: {{ signer.user.email }}</h4>
+                            <h4 class="text-secondary"> NIC: {{ signer.nic_number }} </h4>
+                            <h4 class="text-secondary">
+                                Public Key of the signer: {{ signer.public_key }}
+                            </h4>
+                            <div class="text-right mt-5">
+                                <a href="{% url 'accounts:signers' %}"
+                                   class="btn btn-danger btn-block ">
+                                    Back
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

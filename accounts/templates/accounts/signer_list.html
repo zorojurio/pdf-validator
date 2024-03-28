@@ -51,7 +51,11 @@
                             <td>{{ signer.id }}</td>
                             <td>{{ signer.nic_number }}</td>
                             <td>{{ signer.user.email }}</td>
-                            <td><img src="{{ signer.profile_image.url }}" alt="profile-image" height="100px" width="100px" class="center-image"></td>
+                            <td>
+                                <a href="{% url 'accounts:detail' signer.pk %}">
+                                    <img src="{{ signer.profile_image.url }}" alt="profile-image" height="100px" width="100px" class="center-image">
+                                </a>
+                            </td>
                         </tr>
                     {% empty %}
                         <div class="col-12">
@@ -70,4 +74,7 @@
             </div>
         </div>
     </div>
+
+    {% include 'base/paginator.html' %}
+
 {% endblock %}

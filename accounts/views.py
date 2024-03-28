@@ -8,7 +8,7 @@ from django.template.loader import render_to_string
 from django.urls import reverse_lazy, reverse
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.views.generic import UpdateView
+from django.views.generic import UpdateView, DetailView
 from django.views.generic.edit import CreateView
 from django_filters.views import FilterView
 
@@ -155,3 +155,11 @@ class SignerUserListView(FilterView):
     def get_queryset(self):
         """Get the queryset for the view."""
         return SignerUser.objects.filter(active=True)
+
+
+class SignerDetailsView(LoginRequiredMixin, DetailView):
+    """View for updating signer details."""
+
+    model = SignerUser
+    template_name = "accounts/signer_detail.html"
+    context_object_name = "signer"

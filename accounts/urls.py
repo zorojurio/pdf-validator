@@ -7,6 +7,7 @@ from accounts.views import (
     SignerUserUpdateView,
     activate,
     SignerUserListView,
+    SignerDetailsView,
 )
 
 app_name = "accounts"
@@ -17,4 +18,5 @@ urlpatterns = [
     path("<int:pk>/add-signer/", SignerUserUpdateView.as_view(), name="add-signer"),
     path("activate/<uidb64>/<token>/", activate, name="activate"),
     path("signers/", SignerUserListView.as_view(), name="signers"),
+    path("<int:pk>/", SignerDetailsView.as_view(), name="detail"),
 ]
