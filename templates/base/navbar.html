@@ -16,9 +16,14 @@
                 <a class="nav-link" href="{% url 'accounts:signers' %}">Check Signers</a>
             </li>
             {% if user.is_authenticated and user.user_type == 'signer'  %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'accounts:add-signer' user.signer_user.pk %}"> Change my Public Key</a>
+                {% if user.signer_user and not user.signer_user.public_key %}
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           href="{% url 'accounts:add-signer' user.signer_user.pk %}"> Add Public
+                            Key</a>
                 </li>
+                {% endif %}
+
             {% endif %}
         </ul>
         <ul class="navbar-nav ml-auto">
