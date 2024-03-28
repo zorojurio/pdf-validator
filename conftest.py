@@ -32,6 +32,7 @@ def signer(activated_user_signer_type):
         pb_key = pbs_extractor.get_public_key()
     signer: SignerUser = SignerUser.objects.get(user=activated_user_signer_type)
     signer.public_key = pb_key
+    signer.nic_number = "922971307V"
     signer.active = True
     signer.save()
     return signer

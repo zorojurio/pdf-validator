@@ -20,7 +20,10 @@ class PublicKeyExtractor:
 
     def get_public_key_from_cer(self):
         """Extract public key from the certificate file."""
-        cert = x509.load_der_x509_certificate(self.cert_data, default_backend())
+        # negative number is set by adobe, to bypass the warning log this is added
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            cert = x509.load_der_x509_certificate(self.cert_data, default_backend())
         public_key_bytes = cert.public_key().public_bytes(
             encoding=serialization.Encoding.PEM,
             format=serialization.PublicFormat.SubjectPublicKeyInfo,

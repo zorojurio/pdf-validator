@@ -1,5 +1,6 @@
 import pytest
 from django.apps import apps
+from django.conf import settings
 from django.contrib import auth
 from django.urls import reverse
 
@@ -239,3 +240,144 @@ class TestSignerUserUpdateView:
         assert sorted(response.context["form"].fields.keys()) == sorted(
             ["certificate", "nic_image", "nic_number", "profile_image"]
         )
+
+    def test_signer_user_update_invalid_nic(
+        self,
+        authenticated_signer_client,
+        signer,
+    ):
+        """Test Invalid NIC number."""
+        response = authenticated_signer_client.post(
+            reverse("accounts:add-signer", kwargs={"pk": signer.pk}),
+            data={
+                "nic_number": "54422s2",
+                "certificate": "test.cer",
+                "nic_image": "test.jpg",
+            },
+            format="multipart",
+        )
+        assert response.status_code == 200
+        assert response.context["form"].errors["nic_number"] == [
+            "Invalid National Identity Card Number."
+        ]
+
+    def test_signer_user_existing_nic(
+        self,
+        authenticated_signer_client,
+        signer,
+        signer2,
+    ):
+        """Test with existing NIC."""
+        signer.public_key = None
+        signer2.nic_number = "922971307V"
+        signer2.save()
+        cert_file_path = "CertExchangechanukachathuranga.fdf"
+        with open(settings.TEST_FILES_ROOT + f"/{cert_file_path}", "rb") as fdf_file:
+            with open(settings.TEST_FILES_ROOT + "/NIC.pdf", "rb") as nic_image:
+                with open(
+                    settings.TEST_FILES_ROOT + "/profile-pic.jpg", "rb"
+                ) as profile_image:
+                    response = authenticated_signer_client.post(
+                        reverse("accounts:add-signer", kwargs={"pk": signer.pk}),
+                        {
+                            "certificate": fdf_file,
+                            "nic_number": "922971307V",
+                            "nic_image": nic_image,
+                            "profile_image": profile_image,
+                        },
+                        format="multipart",
+                    )
+                    assert response.status_code == 200
+                    assert response.context["form"].errors["nic_number"] == [
+                        "This National Identity Card Number is already used, with a different user."
+                    ]
+
+    def test_signer_user_existing_public_key(
+        self,
+        authenticated_signer_client,
+        signer,
+        signer2,
+    ):
+        """Test with existing Public key of another signer."""
+        cert_file_path = "kavinduLakith.cer"
+        with open(settings.TEST_FILES_ROOT + f"/{cert_file_path}", "rb") as fdf_file:
+            with open(settings.TEST_FILES_ROOT + "/NIC.pdf", "rb") as nic_image:
+                with open(
+                    settings.TEST_FILES_ROOT + "/profile-pic.jpg", "rb"
+                ) as profile_image:
+                    response = authenticated_signer_client.post(
+                        reverse("accounts:add-signer", kwargs={"pk": signer.pk}),
+                        {
+                            "certificate": fdf_file,
+                            "nic_number": "922971307V",
+                            "nic_image": nic_image,
+                            "profile_image": profile_image,
+                        },
+                        format="multipart",
+                    )
+                    assert response.status_code == 200
+                    assert response.context["form"].errors["certificate"] == [
+                        "This certificate is already used, with a different user."
+                    ]
+
+    def test_signer_user_update_without_required_feilds(
+        self,
+        authenticated_signer_client,
+        signer,
+    ):
+        """Test withour required fields."""
+        fields = [
+            "nic_number",
+            "certificate",
+            "nic_image",
+            "profile_image",
+        ]
+        response = authenticated_signer_client.post(
+            reverse("accounts:add-signer", kwargs={"pk": signer.pk}),
+            format="multipart",
+        )
+        assert response.status_code == 200
+        for field in fields:
+            assert response.context["form"].errors[field] == ["This field is required."]
+
+    @pytest.mark.parametrize(
+        "cert_file_name",
+        [
+            "CertExchangechanukachathuranga.fdf",
+            "CertExchangechanukachathuranga.cer",
+            "CertExchangechanukachathuranga.p7c",
+        ],
+    )
+    def test_signer_user_update_for_valid_data_with_different_certs(
+        self, authenticated_signer_client, signer, cert_file_name
+    ):
+        """Test with valid data with different certifications."""
+        public_key = signer.public_key
+        nic_number = "922971307V"
+        nic_image_name = "NIC"
+        pp_name = "profile-pic"
+        signer.public_key = None
+        signer.save()
+        with open(settings.TEST_FILES_ROOT + f"/{cert_file_name}", "rb") as cert_file:
+            with open(
+                settings.TEST_FILES_ROOT + f"/{nic_image_name}.pdf", "rb"
+            ) as nic_image:
+                with open(
+                    settings.TEST_FILES_ROOT + f"/{pp_name}.jpg", "rb"
+                ) as profile_image:
+                    response = authenticated_signer_client.post(
+                        reverse("accounts:add-signer", kwargs={"pk": signer.pk}),
+                        {
+                            "certificate": cert_file,
+                            "nic_number": nic_number,
+                            "nic_image": nic_image,
+                            "profile_image": profile_image,
+                        },
+                        format="multipart",
+                    )
+                    assert response.status_code == 302
+                    signer.refresh_from_db()
+                    assert signer.public_key == public_key
+                    assert signer.nic_number == nic_number
+                    assert nic_image_name in signer.nic_image.name
+                    assert pp_name in signer.profile_image.name
