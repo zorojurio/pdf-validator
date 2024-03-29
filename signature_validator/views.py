@@ -57,10 +57,6 @@ class ReportView(TemplateView):
 
     template_name = "signature_validator/report.html"
 
-    def get(self, request, *args, **kwargs):
-        """Get method for the view."""
-        return super().get(request, *args, **kwargs)
-
     def get_context_data(self, **kwargs):
         """Get the context data for the view."""
         context = super().get_context_data(**kwargs)
@@ -68,5 +64,7 @@ class ReportView(TemplateView):
             PdfDocumentValidator.objects.all()
         )
         context["pdf_docs_tested"] = validated_pdf.count()
-        validated_pdf.filter(all_signers_verified=True)
+        context["verified_pdf"] = validated_pdf.filter(
+            all_signers_verified=True
+        ).count()
         return context

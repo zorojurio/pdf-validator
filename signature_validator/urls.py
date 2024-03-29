@@ -5,6 +5,7 @@ from signature_validator.views import (
     ValidateSignatureView,
     PDFResultView,
     ValidatedPDFListView,
+    ReportView,
 )
 
 
@@ -15,4 +16,5 @@ urlpatterns = [
     path(
         "pdf-validated_list", ValidatedPDFListView.as_view(), name="validated-pdf-list"
     ),
+    path("report", ReportView.as_view(), name="report"),
 ]
