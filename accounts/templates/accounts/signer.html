@@ -7,19 +7,21 @@
 {% block content %}
 <div class="container">
     <div class="row mt-5">
-        <div class="col-6">
+        <div class="col-lg-6 col-md-4 col-sm-12">
 
         </div>
-        <div class="col-6">
+        <div class="col-lg-6 col-md-4 col-sm-12">
             <div class="card">
                 <div class="card-body">
-                <h2 class="text-danger mb-5">Create Signer</h2>
+                <h2 class="text-danger mb-5">Create Signer Profile</h2>
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         {{ form | crispy }}
 
                         <div class="text-right mt-5">
-                            <button class="btn btn-outline-danger border-radius-one" type="submit">Add Public Key</button>
+                            <button class="btn btn-outline-danger border-radius-one" type="submit">
+                                Create
+                            </button>
                         </div>
                     </form>
                 </div>
