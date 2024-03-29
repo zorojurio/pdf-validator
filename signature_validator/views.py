@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import CreateView, DetailView, ListView
+from django.db.models import QuerySet
+from django.views.generic import CreateView, DetailView, ListView, TemplateView
 
 from .forms import PdfValidateForm
 from .models import PdfDocumentValidator
@@ -49,3 +50,23 @@ class ValidatedPDFListView(LoginRequiredMixin, ListView):
         return PdfDocumentValidator.objects.filter(user=self.request.user).order_by(
             "-created"
         )
+
+
+class ReportView(TemplateView):
+    """View to show the report of the validated PDFs."""
+
+    template_name = "signature_validator/report.html"
+
+    def get(self, request, *args, **kwargs):
+        """Get method for the view."""
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        """Get the context data for the view."""
+        context = super().get_context_data(**kwargs)
+        validated_pdf: QuerySet[PdfDocumentValidator] = (
+            PdfDocumentValidator.objects.all()
+        )
+        context["pdf_docs_tested"] = validated_pdf.count()
+        validated_pdf.filter(all_signers_verified=True)
+        return context
