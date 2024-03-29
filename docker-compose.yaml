@@ -12,6 +12,7 @@ services:
       - ./.env
     depends_on:
       - db
+    restart: always
   db:
     image: postgres:15
     volumes:
@@ -20,6 +21,12 @@ services:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=localdev
       - POSTGRES_DB=pdf_validator
+    restart: always
 
 volumes:
   postgres_data:
+
+networks:
+    default:
+        external:
+          name: my_network
