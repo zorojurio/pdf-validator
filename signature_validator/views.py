@@ -81,7 +81,7 @@ class ReportView(TemplateView):
         signed_documents_data = []
         days = []
 
-        for i in range(1, 6):
+        for i in range(0, 5):
             current_day = timezone.now() - timedelta(days=i)
             start_of_day = current_day.replace(
                 hour=0, minute=0, second=0, microsecond=0
@@ -99,7 +99,7 @@ class ReportView(TemplateView):
 
         users_data = []
         users_label = []
-        for i in range(1, 7):
+        for i in range(0, 6):
             current_day = timezone.now() - timedelta(days=i)
             start_of_day = current_day.replace(
                 hour=0, minute=0, second=0, microsecond=0
