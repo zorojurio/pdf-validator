@@ -40,6 +40,7 @@ RUN poetry install --no-root --only main \
 ENV VIRTUAL_ENV="${VENV_PATH}" \
     POETRY_VIRTUALENVS_CREATE=false
 
-RUN python manage.py collectstatic --noinput
-RUN python manage.py migrate
+
 RUN poetry install
+
+COPY . .
