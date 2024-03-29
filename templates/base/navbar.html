@@ -21,10 +21,16 @@
                         <a class="nav-link"
                            href="{% url 'accounts:add-signer' user.signer_user.pk %}"> Add Public
                             Key</a>
-                </li>
+                    </li>
                 {% endif %}
-
             {% endif %}
+            {% if user.is_authenticated and user.is_superuser %}
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="{% url 'signature-validator-view:report' %}">Analytics</a>
+                </li>
+            {% endif %}
+
         </ul>
         <ul class="navbar-nav ml-auto">
 

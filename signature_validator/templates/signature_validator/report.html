@@ -5,36 +5,121 @@
 {% block content %}
 <div class="container">
     <div class="row mt-5">
-        <div class="col-lg-6 col-md-4 col-sm-12">
-            <h2 class="text-danger mb-5">Reports</h2>
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <h2 class="text-danger mb-5 text-center">Analytics as at {{ today_date }}</h2>
             <div class="card-group">
-                <div class="card text-white bg-success mb-3 mr-5" style="max-width: 18rem;">
-                    <div class="card-header">
-                        <h2 class="bg-success"> No of PDF tested</h2>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text">{{ pdf_docs_tested }}</p>
-                    </div>
-                </div>
                 <div class="card text-white bg-info mb-3 mr-5" style="max-width: 18rem;">
                     <div class="card-header">
-                        <h2 class="bg-info"> No of verified PDF </h2>
+                        <h2> PDF tested</h2>
                     </div>
                     <div class="card-body">
-                        <p class="card-text">{{ verified_pdf }}</p>
+                        <p class="card-text text-center display-4">{{ pdf_docs_tested }}</p>
                     </div>
                 </div>
-
+                <div class="card text-white bg-success mb-3 mr-5" style="max-width: 18rem;">
+                    <div class="card-header">
+                        <h2> Verified PDF </h2>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text text-center display-4">{{ verified_pdf }}</p>
+                    </div>
+                </div>
+                <div class="card text-white bg-warning mb-3 mr-5" style="max-width: 18rem;">
+                    <div class="card-header">
+                        <h2> User</h2>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text text-center display-4">{{ users_count }}</p>
+                    </div>
+                </div>
+                <div class="card text-white bg-primary mb-3 mr-5" style="max-width: 18rem;">
+                    <div class="card-header">
+                        <h2> Signers</h2>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text text-center display-4">{{ signers_count }}</p>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="col-lg-6 col-md-4 col-sm-12">
-            <div class="card">
-                <div class="card-body">
-
-
-                </div>
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="mt-5">
+                <h2 class="text-danger mb-5 text-center">Signed Document per day</h2>
+                <canvas id="signed_docs_by_day"></canvas>
+            </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="mt-5">
+                <h2 class="text-danger mb-5 text-center">Users joined per day
+                </h2>
+                <canvas id="users_joined"></canvas>
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
+
+{% block extra_head_bottom %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('signed_docs_by_day');
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ signed_documents_labels | safe }},
+                datasets: [{
+                    label: '# of Validations',
+                    data: {{ signed_documents_data }},
+                    borderWidth: 1,
+                    fill: true
+                }],
+
+            },
+            options: {
+                elements: {
+                    line: {
+                        tension: 0.5,
+                    },
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+
+            }
+        })
+
+        const users_joined = document.getElementById('users_joined');
+
+        new Chart(users_joined, {
+            type: 'line',
+            data: {
+                labels: {{ users_label | safe }},
+                datasets: [{
+                    label: '# of Joined Users',
+                    data: {{ users_data }},
+                    borderWidth: 1,
+                    fill: true,
+                    backgroundColor: 'rgb(100,169,115)',
+                }],
+
+            },
+            options: {
+                elements: {
+                    line: {
+                        tension: 0.5,
+                    },
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+
+            }
+        });
+    </script>
+
+{% endblock extra_head_bottom %}
