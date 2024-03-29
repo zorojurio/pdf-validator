@@ -30,7 +30,9 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   # cleaning up unused files
   && apt-get purge -y --auto-remove \
   && rm -rf /var/lib/apt/lists/* \
-  && pip3 install poetry
+  && pip3 install poetry \
+
+COPY poetry.lock pyproject.toml ./
   # Install poetry
 RUN poetry install --no-root --only main \
     && rm -r ${POETRY_CACHE_DIR}/*
@@ -38,6 +40,5 @@ RUN poetry install --no-root --only main \
 ENV VIRTUAL_ENV="${VENV_PATH}" \
     POETRY_VIRTUALENVS_CREATE=false
 
-COPY poetry.lock pyproject.toml /usr/src/app/
 
 RUN poetry install  --with root,dev
