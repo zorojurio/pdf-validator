@@ -10,6 +10,8 @@ services:
       - POSTGRES_PASSWORD=localdev
       - POSTGRES_DB=pdf_validator
     restart: always
+    networks:
+      - djangonetwork
   web:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
@@ -22,12 +24,13 @@ services:
     depends_on:
       - db
     restart: always
+    networks:
+      - djangonetwork
 
 
 volumes:
   postgres_data:
 
 networks:
-    default:
-        external:
-          name: my_network
+    djangonetwork:
+        driver: bridge
