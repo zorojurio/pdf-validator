@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- responsive tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Some author">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+    <!-- SEO Meta Tags-->
+     <link rel="home" href="https://{{ request.META.HTTP_HOST }}.com/" />
+    <title>
+        Validator
+        {% block head_title %}
+
+        {% endblock %}
+    </title>
+    <meta name="description" content="{% block meta_description %}{% endblock %}">
+    <link href="https://{{ request.META.HTTP_HOST }}.com{{request.path}}" rel="canonical">
+    <meta name="keywords" content="{% block keywords %} {% endblock %}">
+
+    <!-- additional CSS tags -->
+    {% block extrastyle %}{% endblock extrastyle %}
+
+    <!-- addition JS or SEO tags -->
+    {% block extra_head_top %}{% endblock extra_head_top %}
+
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+     <!-- common CSS files -->
+    {% include 'base/css.html' %}
+
+</head>
+<body>
+    {% include 'signature_validator/pdf_validation_report.html' %}
+
+    <!-- common JS files -->
+    {% include 'base/js.html' %}
+
+
+</body>
+</html>

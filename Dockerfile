@@ -25,7 +25,8 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   curl \
   git \
   gettext \
-  # Install weasyprint dependencies
+  # Install weasyprint dependencies \
+  wkhtmltopdf \
   python3-dev libblas-dev libatlas-base-dev gcc\
   # cleaning up unused files
   && apt-get purge -y --auto-remove \

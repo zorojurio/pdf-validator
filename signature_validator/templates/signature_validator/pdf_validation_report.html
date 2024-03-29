@@ -1,0 +1,174 @@
+{% load static %}
+
+{% if pdf_restult %}
+    <div class="card">
+        <div class="card-body">
+            <h2 class="text-info mb-5 text-center underline-text">PDF Validation Report. </h2>
+            <div class="row">
+
+                <div class="col-7">
+                    <div class="w-full text-base text-gray-800 leading-7">
+                        The PDF is
+                        {% if pdf_restult.all_signers_verified %}
+                            <span class="text-success "> verified <i
+                                    class="fas fa-check-circle green-circle"></i> </span>
+                        {% else %}
+                            <span class="text-danger"> is not verified.
+                                            <i class="fas fa-times-circle red-circle"></i>
+                                            </span>
+                        {% endif %}
+                    </div>
+                    <div class="w-full text-base text-gray-800 leading-7">
+
+                        All signatures are
+                        {% if pdf_restult.is_signatures_valid %}
+                            <span class="text-success"> Valid.
+                                                <i class="fas fa-check-circle green-circle"></i> </span>
+                        {% else %}
+                            <span class="text-danger"> Not Signed.
+                                                <i class="fas fa-times-circle red-circle"></i>
+                                            </span>
+                        {% endif %}
+                    </div>
+
+                    <div class="w-full text-base text-gray-800 leading-7">
+                        Hashes are
+                        {% if pdf_restult.is_hashes_valid %}
+                            <span class="text-success"> Valid. <i
+                                    class="fas fa-check-circle green-circle"></i></span>
+                        {% else %}
+                            <span class="text-danger"> not valid, The document has been modified.
+                                                <i class="fas fa-times-circle red-circle"></i>
+                                            </span>
+                        {% endif %}
+                    </div>
+                    <div class="w-full text-base text-gray-800 leading-7">
+                        The PDF is
+                        {% if pdf_restult.is_signed %}
+                            <span class="text-success ">digitally signed. <i
+                                    class="fas fa-check-circle green-circle"></i> </span>
+                        {% else %}
+                            <span class="text-danger">digitally not signed.
+                                            <i class="fas fa-times-circle red-circle"></i>
+                                            </span>
+                        {% endif %}
+                    </div>
+                    <p class="w-full text-base text-gray-800 leading-7">
+                        This PDF has signed by {{ pdf_restult.distinct_people_signed }} people, and
+                        there are
+                        {{ pdf_restult.signaturevalidator_set.count }} signatures.</p>
+                    <div class="mb-5 mt-5">
+                        {% if pdf_restult.updated %}
+                            Date of Validation:
+                            <span class="text-secondary"> {{ pdf_restult.updated }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-5">
+                    <img src="{% static 'img/fill_and_sign.svg' %}" height="200px"
+                         class="center-image" alt="Signature">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-11">
+                    {% for signaturevalidator in pdfdocumentvalidator.signaturevalidator_set.all %}
+                        <h4 class="text-info text-center mt-5">{{ signaturevalidator.signature_name }}</h4>
+                        <table class="table table-bordered mb-3">
+
+                            <tbody>
+                            <tr>
+                                <td><span class="font-weight-bold">Hash</span>
+                                </td>
+                                <td colspan="3">
+                                    {% if signaturevalidator.hash_valid %}
+                                        <i class="fas fa-check-circle green-circle"></i>
+
+                                        <span class="text-success"> Valid.
+                                                                    </span>
+                                    {% else %}
+                                        <i class="fas fa-times-circle red-circle"></i>
+
+                                        <span class="text-danger"> Invalid.
+                                                                </span>
+                                        <p>This document has been modified.</p>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="font-weight-bold">Signature Valid:</span>
+                                </td>
+                                <td colspan="3">
+                                    {% if signaturevalidator.signature_valid %}
+                                        <i class="fas fa-check-circle green-circle"></i>
+
+                                        <span class="text-success"> valid.
+                                                                        </span>
+                                    {% else %}
+                                        <i class="fas fa-times-circle red-circle"></i>
+
+                                        <span class="text-danger"> invalid.
+                                                                    </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="font-weight-bold">Verified Signer:</span>
+                                </td>
+                                <td colspan="3">
+                                    {% if signaturevalidator.verified_signer %}
+                                        <i class="fas fa-check-circle green-circle"></i>
+
+                                        <span class="text-success"> Signer is verified in the system
+                                                                </span>
+                                    {% else %}
+                                        <i class="fas fa-times-circle red-circle"></i>
+
+                                        <span class="text-danger"> Signer is not verified in the system
+                                                                </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% if signaturevalidator.message %}
+                                <tr>
+                                    <td><span
+                                            class="font-weight-bold">Message:</span>
+                                    </td>
+                                    <td colspan="3"><span
+                                            class="text-secondary">{{ signaturevalidator.message }}</span>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                            <tr>
+                                <td><span class="font-weight-bold">Signed by:</span></td>
+                                <td colspan="3">
+                                    {% if signaturevalidator.signer_user %}
+                                        <a href="{% url 'accounts:detail' signaturevalidator.signer_user.pk %}">
+                                            {{ signaturevalidator.signed_by }}
+                                        </a>
+                                    {% else %}
+                                        {{ signaturevalidator.signed_by }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td><span class="font-weight-bold">Signer's Email:</span></td>
+                                <td colspan="3"> {{ signaturevalidator.email_of_signer }}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="font-weight-bold">Signature placed at:</span></td>
+                                <td colspan="3">{{ signaturevalidator.signing_time }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+{% endif %}

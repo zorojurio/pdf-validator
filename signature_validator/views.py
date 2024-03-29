@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 from datetime import timedelta
 
+import pdfkit
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+from django.urls import reverse
 from django.utils import timezone
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -8,6 +12,7 @@ from django.db.models import QuerySet
 from django.views.generic import CreateView, DetailView, ListView, TemplateView
 
 from accounts.models import CustomUser, SignerUser
+
 from .forms import PdfValidateForm
 from .models import PdfDocumentValidator
 
@@ -34,6 +39,19 @@ class PDFResultView(LoginRequiredMixin, DetailView):
 
     model = PdfDocumentValidator
     template_name = "signature_validator/pdf_result.html"
+
+    def get_context_data(self, **kwargs):
+        """Get the context data to template."""
+        context = super().get_context_data(**kwargs)
+        context["pdf_restult"] = self.get_object()
+        return context
+
+
+class PDFResultReportView(DetailView):
+    """View to show the result of the PDF validation."""
+
+    model = PdfDocumentValidator
+    template_name = "signature_validator/pdf_validation_report_with_styles.html"
 
     def get_context_data(self, **kwargs):
         """Get the context data to template."""
@@ -117,3 +135,20 @@ class ReportView(TemplateView):
         context["users_data"] = users_data
         context["users_label"] = users_label
         return context
+
+
+@login_required
+def generate_pdf_report(request, *args, **kwargs):
+    """Generate the PDF report of the validated PDFs."""
+    pdf = pdfkit.from_url(
+        request.build_absolute_uri(
+            reverse(
+                "signature-validator-view:pdf-result-report",
+                kwargs={"pk": kwargs.get("pk")},
+            )
+        ),
+        False,
+    )
+    response = HttpResponse(pdf, content_type="application/pdf")
+    response["Content-Disposition"] = 'attachment; filename="report.pdf"'
+    return response
