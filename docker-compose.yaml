@@ -2,11 +2,24 @@ version: '3.8'
 
 services:
   web:
-    build: .
+    build: ./app
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - .:/usr/src/app/
+      - ./app/:/usr/src/app/
     ports:
       - "8000:8000"
     env_file:
-      - ./.env
+      - ./.env.dev
+    depends_on:
+      - db
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=localdev
+      - POSTGRES_DB=pdf_validator
+
+volumes:
+  postgres_data:
