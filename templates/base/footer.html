@@ -1,0 +1,47 @@
+{% load static %}
+<footer class="bg-light">
+    <div class="row">
+        <div class="col-sm-6 col-md-4 footer-navigation">
+            <h3>
+                <a href="{% url 'signature-validator-view:validate-signature' %}">
+                    <img src="{% static 'img/logo-transparent.png' %}" style="max-height: 40px"
+                         alt="Logo">
+                </a>
+
+            </h3>
+            <p class="links">
+                <a href="{% url 'signature-validator-view:validate-signature' %}">Home</a>
+                <strong>&nbsp; · </strong>
+
+            <p class="company-name">PDF Validator © 2024</p>
+            <p class="company-name">Project By:
+                <a href="/">DonDevs Developers</a>
+            </p>
+        </div>
+        <div class="col-sm-6 col-md-4 mt-5 footer-contacts">
+            <div>
+                <p>
+                    <i class="fa fa-address-book" aria-hidden="true"></i>
+                    <span >331/5A, Palenwatte, </span > Pannipitiya
+                </p>
+            </div>
+            <div>
+
+                <p class="footer-center-info email text-left">
+                    <i class="fa fa-phone" aria-hidden="true"></i>
+                    <a href="tel:+94-770-783-209">+94-770-078-3209</a>
+                </p>
+            </div>
+            <div><i class="fa fa-envelope" aria-hidden="true"></i>
+                <a href="mailto:3rule57@gmail.com " target="_blank">
+                    3rule57@gmail.com
+                </a>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-md-4 footer-about mt-5">
+            <h4>About the company</h4>
+            <p> We’re a company that focusses on PDF validation </p>
+        </div>
+    </div>
+</footer>
